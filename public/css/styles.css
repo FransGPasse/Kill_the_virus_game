@@ -9,8 +9,10 @@ body {
   height: 100vh;
   background-color: #253e11;
   font-family: "Press Start 2P";
-  cursor: url("../images/Handsprit.png"), auto;
+  cursor: url("/public/assets/handsprit_sned.png"), auto;
 }
+
+
 
 header {
   height: 20%;
