@@ -2,6 +2,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  --clr-friendly: white;
+  --clr-opponent: #be1d30;
 }
 
 body {
@@ -9,10 +11,8 @@ body {
   height: 100vh;
   background-color: #253e11;
   font-family: "Press Start 2P";
-  cursor: url("/public/assets/handsprit_sned.png"), auto;
+  cursor: url("/public/assets/handsprit-stor.png"), auto;
 }
-
-
 
 header {
   height: 20%;
