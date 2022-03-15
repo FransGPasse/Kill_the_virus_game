@@ -8,7 +8,6 @@ virus.addEventListener('click', () => {
     // Random numbers for grid
     let randomGridNumberX = Math.floor(Math.random() * 11);
     let randomGridNumberY = Math.floor(Math.random() * 11);
-    console.log('hej')
 
     // Adding the styling in a object so the virus can move around randon
     let randomGrid = {
