@@ -12,26 +12,24 @@
 body {
   width: 100%;
   height: 100vh;
+
   background-color: #253e11;
   font-family: "Press Start 2P";
   font-size: var(--font-big);
+
   cursor: url("/public/assets/handsprit-stor.png"), auto;
 }
 
 header {
-  height: 15%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
   text-align: center;
-  padding: 0 2.5%;
   color: var(--clr-opponent);
-}
 
-main {
-  height: 80%;
+  margin: 1.5em 0em;
 }
 
 .container {
@@ -39,7 +37,7 @@ main {
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  height: 100%;
+  height: 85%;
   padding: 0% 2em;
 }
 
@@ -49,36 +47,36 @@ main {
 }
 
 #game {
-  width: 100%;
   height: 100%;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
-  grid-column-gap: 5px;
-  grid-row-gap: 5px;
+  gap: 5px;
   align-items: center;
-  justify-content: space-evenly;
-}
-
-.virus {
-  width: 80px;
 }
 
 #scoreboard {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
 
   color: var(--clr-friendly);
 
   font-size: var(--font-small);
 
   text-align: center;
+
+  width: 100%;
+  height: 100%;
+  margin-top: 1em;
 }
 
 #scoreboard span {
   color: var(--clr-opponent);
+}
+
+.virus {
+  width: 80px;
 }
 
 /* Small tablet size */
