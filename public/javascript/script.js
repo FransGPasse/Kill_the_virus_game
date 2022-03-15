@@ -1,7 +1,7 @@
 "use strict";
 
 let cursorImages = ["Handsprit.png", "Handsprit@2x", "Handsprit@3x"];
-let virus = document.querySelector(".virus");
+let virus = document.querySelector("#virus");
 let rounds = 10;
 
 virus.addEventListener("click", () => {
