@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/FransGPasse/Kill_the_virus_game/issues"
   },
-  "homepage": "https://github.com/FransGPasse/Kill_the_virus_game#readme"
+  "homepage": "https://github.com/FransGPasse/Kill_the_virus_game#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "mongoose": "^6.2.6",
+    "node": "^17.7.1",
+    "socket.io": "^4.4.1"
+  }
 }
