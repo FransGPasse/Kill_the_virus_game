@@ -3,8 +3,16 @@
 let cursorImages = ["Handsprit.png", "Handsprit@2x", "Handsprit@3x"];
 let virus = document.querySelector("#virus");
 let rounds = 10;
+let clickedTime;
+let createdTime;
+let reactionTime;
 
 virus.addEventListener("click", () => {
+  // Get the clock after click
+  clickedTime = Date.now();
+  // Get the time in milliseconds
+  reactionTime = (clickedTime - createdTime) / 1000;
+  console.log("Din reaktions tid är: " + reactionTime + "s");
   virus.style.visibility = "hidden";
   let delay = Math.floor(Math.random() * 5);
   setTimeout(() => {
@@ -31,5 +39,6 @@ const generateNewPosition = () => {
   // Assign the object to the virus so it moves around on every click
   Object.assign(virus.style, randomGrid);
 
-  //   showVirus();
+  // Start the clock
+  createdTime = Date.now();
 };
