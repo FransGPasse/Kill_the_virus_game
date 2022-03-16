@@ -1,24 +1,19 @@
 "use strict";
 
-
 /*
-*   Server-to-front-end functions (( ARBETSTITEL ))
-*
-*/
+ *   Server-to-front-end functions (( ARBETSTITEL ))
+ *
+ */
 const socket = io();
-
 
 socket.on("user:connected", (username) => {
   return username;
-})
-
-
-
+});
 
 /*
-*   Game functions
-*
-*/
+ *   Game functions
+ *
+ */
 
 let cursorImages = ["Handsprit.png", "Handsprit@2x", "Handsprit@3x"];
 let virus = document.querySelector("#virus");

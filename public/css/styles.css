@@ -5,8 +5,17 @@
   --clr-friendly: white;
   --clr-opponent: #be1d30;
 
-  --font-big: clamp(0.7rem, 2.5vw, 2rem);
-  --font-small: clamp(0.7rem, 1.5vw, 1rem);
+  --font-big: clamp(0.5rem, 1rem, 1.5rem);
+  --font-small: clamp(0.5rem, 0.6rem, 1rem);
+}
+
+/* Helper class */
+.hidden {
+  visibility: hidden;
+}
+
+#game {
+  visibility: hidden;
 }
 
 body {
@@ -20,7 +29,7 @@ body {
 
   background-color: #253e11;
   font-family: "Press Start 2P";
-  font-size: var(--font-size);
+  font-size: var(--font-big);
   cursor: url("../assets/handsprit-stor.png"), auto;
 
   padding: 0em 2em;
@@ -32,12 +41,12 @@ header {
   padding: 1.5em 0em;
 }
 
-#game,
+#board,
 #scoreboard {
   background-color: #141c10;
 }
 
-#game {
+#board {
   height: 80vh;
   width: 100%;
 
