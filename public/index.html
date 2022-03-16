@@ -11,21 +11,23 @@
       href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/public/css/styles.css" />
-    <script defer src="/public/javascript/script.js"></script>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script defer src="./javascript/script.js"></script>
   </head>
   <body>
-    <header>
-      <h1>Kill the virus!</h1>
-    </header>
-    <section class="container">
-      <div id="game">
-        <img src="/public/assets/Virus.png" alt="virus" class="virus" />
-      </div>
-      <div id="scoreboard">
-        <div id="score">
+    <main>
+      <header>
+        <h1>Kill the virus!</h1>
+      </header>
+      <section class="container">
+        <div id="game">
+          <img src="./assets/Virus.png" alt="virus" id="virus" />
+        </div>
+        <div id="scoreboard">
           <h2>Scoreboard</h2>
           <h2>6 / <span>9</span></h2>
+          <h3 id="your-score"></h3>
+          <h3 id="opponent-score"><span>Opponents score: 0.000</span></h3>
         </div>
 
         <div id="times">
