@@ -12,7 +12,7 @@ virus.addEventListener("click", () => {
   clickedTime = Date.now();
   // Get the time in milliseconds
   reactionTime = (clickedTime - createdTime) / 1000;
-  console.log("Din reaktions tid är: " + reactionTime + "s");
+  document.querySelector("#your-score").innerHTML = reactionTime + "s";
   virus.style.visibility = "hidden";
   let delay = Math.floor(Math.random() * 5);
   setTimeout(() => {
