@@ -53,6 +53,22 @@ header {
   width: 80px;
 }
 
+.ripple {
+  width: 10px;
+  height: 10px;
+  background-color: transparent;
+  position: fixed;
+  border-radius: 50%;
+  border: 1px solid #ffffff;
+}
+
+@keyframes ripple-effect {
+  to {
+    transform: scale(15);
+    opacity: 0.01;
+  }
+}
+
 #scoreboard {
   display: flex;
   align-items: center;
