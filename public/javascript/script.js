@@ -26,6 +26,26 @@ let clickedTime;
 let createdTime;
 let reactionTime;
 
+// Check if the cursor has been cliked, if so we run the function below
+document.onclick = () => applyCursorRippleEffect(event);
+
+// Functon to get the cursor effect on click
+function applyCursorRippleEffect(e) {
+  // Create a document for the effect
+  const ripple = document.createElement("div");
+  // Add the classname to the div
+  ripple.className = "ripple";
+  // Append the div to the body
+  document.body.appendChild(ripple);
+  // Get position of the cursor
+  ripple.style.left = `${e.clientX}px`;
+  ripple.style.top = `${e.clientY}px`;
+  // Add the animation
+  ripple.style.animation = "ripple-effect .4s  linear";
+  // Remove animation
+  ripple.onanimationend = () => document.body.removeChild(ripple);
+}
+
 virus.addEventListener("click", () => {
   // Get the clock after click
   clickedTime = Date.now();
