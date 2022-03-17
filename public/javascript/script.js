@@ -4,11 +4,15 @@
  *   Server-to-front-end functions (( ARBETSTITEL ))
  *
  */
-/* const socket = io();
+ 
+const socket = io();
 
 socket.on("user:connected", (username) => {
-  return username;
-}); */
+  console.log('Lyssnar på user:connected')
+});
+
+
+
 
 /*
  *   Game functions
