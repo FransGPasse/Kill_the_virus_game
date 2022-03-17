@@ -11,6 +11,13 @@
       href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/nes.css/2.0.0/css/nes.min.css"
+      integrity="sha512-yLfn7V0hubHgkT9/iqdUZI5uyhxIXobm6WynYpG0zRdUnDzH2DkaajPJ05CLjHVCX7RjX4UFw6ypW7sXPIr97Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <link rel="stylesheet" href="./css/styles.css" />
     <script defer src="./javascript/script.js"></script>
   </head>
@@ -18,6 +25,25 @@
     <header>
       <h1>Kill the virus!</h1>
     </header>
+
+    <section class="first-screen">
+      <header>
+        <h1>Kill the virus!</h1>
+      </header>
+      <form action="" class="nes-container">
+        <div class="nes-field">
+          <label for="username">Your username</label>
+          <input
+            type="text"
+            id="username"
+            class="nes-input"
+            placeholder="..."
+          />
+        </div>
+        <button class="nes-btn">Play</button>
+      </form>
+    </section>
+
     <div id="game">
       <img src="./assets/Virus.png" alt="virus" id="virus" />
     </div>
