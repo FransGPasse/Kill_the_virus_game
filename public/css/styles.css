@@ -36,12 +36,53 @@ body {
 }
 
 header {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: var(--clr-opponent);
   padding: 1.5em 0em;
+  height: 20%;
+  width: 100%;
 }
 
-#board,
+/*
+** First screen starts
+*/
+
+.first-screen {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  background-color: white;
+}
+
+.first-screen header {
+  position: fixed;
+  top: 0;
+}
+
+form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 50%;
+  width: 50%;
+}
+
+form button {
+  margin-top: 2.5%;
+}
+
+/*
+*** First screen ends
+*/
+
+#game,
 #scoreboard {
   background-color: #141c10;
 }
