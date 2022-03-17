@@ -6,7 +6,7 @@
   --clr-opponent: #be1d30;
 
   --font-big: clamp(0.5rem, 1rem, 1.5rem);
-  --font-small: clamp(0.5rem, 0.6rem, 1rem);
+  --font-small: clamp(0.5rem, 0.7rem, 1rem);
 }
 
 /* Helper class */
@@ -14,9 +14,9 @@
   visibility: hidden;
 }
 
-#game {
+/* #game {
   visibility: hidden;
-}
+} */
 
 body {
   height: 100vh;
