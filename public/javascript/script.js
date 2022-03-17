@@ -4,15 +4,12 @@
  *   Server-to-front-end functions (( ARBETSTITEL ))
  *
  */
- 
+
 const socket = io();
 
 socket.on("user:connected", (username) => {
-  console.log('Lyssnar på user:connected')
+  console.log("Lyssnar på user:connected");
 });
-
-
-
 
 /*
  *   Game functions
@@ -25,6 +22,27 @@ let rounds = 10;
 let clickedTime;
 let createdTime;
 let reactionTime;
+let count = 3;
+
+// COUNTDOWN FUNCTION
+// function endCountdown() {
+//   console.log("starting the game now");
+// }
+
+// function handleTimer() {
+//   if (count === -1) {
+//     clearInterval(timer);
+//     endCountdown();
+//   } else {
+//     document.querySelector(".countdown").innerHTML = count;
+//     count--;
+//   }
+// }
+
+// var timer = setInterval(function () {
+//   handleTimer(count);
+// }, 1000);
+// COUNTDOWN FUNCTION
 
 // Check if the cursor has been cliked, if so we run the function below
 document.onclick = () => applyCursorRippleEffect(event);
