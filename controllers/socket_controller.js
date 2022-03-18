@@ -12,7 +12,6 @@ let io = null;
 const rooms = [
   {
     id: "lobby",
-    name: "Lobby",
     usernames: ["Kenny"],
   },
 ];
@@ -67,7 +66,6 @@ const startGame = function (player1, player2) {
 
   const newGameRoom = {
     id: gameRoom,
-    name: gameRoom,
     usernames: [player1, player2],
   };
 
