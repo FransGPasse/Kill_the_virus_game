@@ -19,12 +19,15 @@
       referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="./css/styles.css" />
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
     <script defer src="./javascript/script.js"></script>
   </head>
   <body>
     <header>
       <h1>Kill the virus!</h1>
     </header>
+
+    <!-- First page -->
 
     <section class="first-screen">
       <header>
@@ -43,6 +46,21 @@
         <button class="nes-btn">Play</button>
       </form>
     </section>
+
+    <!-- Second page -->
+
+    <section class="second-screen">
+      <header>
+        <h1>Kill the virus!</h1>
+      </header>
+      <h1>Welcome, <span>username</span></h1>
+      <p>Waiting for a opponent.</p>
+      <p>1 / 2</p>
+      <div id="loader"></div>
+      <p class="countdown">&nbsp;</p>
+    </section>
+
+    <!-- Game page -->
 
     <div id="game">
       <img src="./assets/Virus.png" alt="virus" id="virus" />
