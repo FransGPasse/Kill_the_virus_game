@@ -7,6 +7,8 @@
 
 const socket = io();
 
+let username = null;
+
 socket.on("user:connected", (username) => {
   console.log("Lyssnar på user:connected");
 });
@@ -18,10 +20,13 @@ socket.on("user:connected", (username) => {
 
 let virus = document.querySelector("#virus");
 
+/* Hämtar alla de olika skärmarna vi använder */
 let firstScreen = document.querySelector(".first-screen");
 let secondScreen = document.querySelector(".second-screen");
+let gameScreen = document.querySelector("#game");
 
-let submitUsername = document.querySelector(".submit-username");
+/* Hämtar knappen där man skriver in lösenord */
+let submitUsername = document.querySelector("#submit-username");
 
 let rounds = 10;
 let clickedTime;
@@ -30,14 +35,22 @@ let reactionTime;
 let count = 3;
 
 const searchForGame = () => {
-  firstScreen.classList.add("hidden");
+  firstScreen.classList.toggle("hidden");
   secondScreen.classList.toggle("hidden");
 };
 
-submitUsername.addEventListener("submit", e => {
+submitUsername.addEventListener("submit", (e) => {
   e.preventDefault();
-  
+
   searchForGame();
+
+  username = submitUsername.username.value;
+
+  let welcomeUser = document.querySelector("#welcome-user");
+
+  welcomeUser.innerHTML = "Welcome, " + username;
+
+  socket.emit("user:joined", () => {});
 });
 
 // COUNTDOWN FUNCTION

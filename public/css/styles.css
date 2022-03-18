@@ -9,15 +9,6 @@
   --font-small: clamp(0.5rem, 0.7rem, 1rem);
 }
 
-/* Helper class */
-.hidden {
-  visibility: hidden;
-}
-
-/* #game {
-  visibility: hidden;
-} */
-
 body {
   height: 100vh;
   width: 100vw;
@@ -53,29 +44,19 @@ header {
   height: 100%;
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  position: absolute;
-  background-color: white;
-}
-
-.first-screen header {
-  position: fixed;
-  top: 0;
+  background-color: var(--clr-friendly);
 }
 
 form {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  height: 50%;
-  width: 50%;
-}
-
-#username {
-  text-align: center;
+  width: 75%;
+  height: 75%;
 }
 
 .nes-btn {
@@ -91,23 +72,14 @@ form {
 */
 
 .second-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   height: 100%;
   width: 100%;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
   gap: 5%;
-}
-
-header {
-  height: 20%;
-  width: 100%;
-  position: fixed;
-  top: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 #loader {
@@ -335,4 +307,9 @@ header {
   body {
     background-color: rgb(148, 52, 68);
   }
+}
+
+/* Helper class */
+.hidden {
+  display: none;
 }
