@@ -19,7 +19,10 @@
       referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="./css/styles.css" />
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"
+    ></script>
     <script defer src="./javascript/script.js"></script>
   </head>
   <body>
@@ -30,29 +33,24 @@
     <!-- First page -->
 
     <section class="first-screen">
-      <header>
-        <h1>Kill the virus!</h1>
-      </header>
-      <form action="" class="nes-container">
+      <form class="nes-container submit-username">
         <div class="nes-field">
-          <label for="username">Your username</label>
+          <label id="username">Your username</label>
           <input
             type="text"
             id="username"
             class="nes-input"
             placeholder="..."
+            required
           />
         </div>
-        <button class="nes-btn">Play</button>
+        <button type="submit" class="nes-btn">Play</button>
       </form>
     </section>
 
     <!-- Second page -->
 
-    <section class="second-screen">
-      <header>
-        <h1>Kill the virus!</h1>
-      </header>
+    <section class="second-screen">9
       <h1>Welcome, <span>username</span></h1>
       <p>Waiting for a opponent.</p>
       <p>1 / 2</p>
@@ -61,15 +59,9 @@
     </section>
 
     <!-- Game page -->
-
-    <div id="game">
-      <img src="./assets/Virus.png" alt="virus" id="virus" />
-    </div>
-
-    <div id="scoreboard">
-      <div id="score">
-        <h2>Scoreboard:</h2>
-        <h2>6 / <span>9</span></h2>
+    <section class="game">
+      <div id="board">
+        <img src="./assets/Virus.png" alt="virus" id="virus" />
       </div>
 
       <div id="scoreboard">

@@ -25,7 +25,7 @@ const handlePlayerJoin = function (username, callback) {
 
   const room = rooms.find((room) => room.id === "lobby");
 
-  room.usernames.push("username");
+  room.usernames.push(username);
 
   // Kolla om det är två eller fler users i lobbyn
   if (_.size(room.usernames) >= 2) {
@@ -90,4 +90,4 @@ module.exports = function (socket, io) {
   socket.on("user:joined", handlePlayerJoin);
 };
 
-handlePlayerJoin();
+// handlePlayerJoin();

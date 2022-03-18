@@ -16,13 +16,29 @@ socket.on("user:connected", (username) => {
  *
  */
 
-let cursorImages = ["Handsprit.png", "Handsprit@2x", "Handsprit@3x"];
 let virus = document.querySelector("#virus");
+
+let firstScreen = document.querySelector(".first-screen");
+let secondScreen = document.querySelector(".second-screen");
+
+let submitUsername = document.querySelector(".submit-username");
+
 let rounds = 10;
 let clickedTime;
 let createdTime;
 let reactionTime;
 let count = 3;
+
+const searchForGame = () => {
+  firstScreen.classList.add("hidden");
+  secondScreen.classList.toggle("hidden");
+};
+
+submitUsername.addEventListener("submit", e => {
+  e.preventDefault();
+  
+  searchForGame();
+});
 
 // COUNTDOWN FUNCTION
 // function endCountdown() {

@@ -74,8 +74,12 @@ form {
   width: 50%;
 }
 
-form button {
-  margin-top: 2.5%;
+#username {
+  text-align: center;
+}
+
+.nes-btn {
+  margin-top: 10%;
 }
 
 /*
@@ -240,7 +244,7 @@ header {
 *** Styling for second screen ends here
 */
 
-#game,
+#board,
 #scoreboard {
   background-color: #141c10;
 }
