@@ -50,7 +50,7 @@ submitUsername.addEventListener("submit", (e) => {
 
   welcomeUser.innerHTML = "Welcome, " + username;
 
-  socket.emit("user:joined", () => {});
+  socket.emit("user:joined", username);
 });
 
 // COUNTDOWN FUNCTION
