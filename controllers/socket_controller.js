@@ -7,8 +7,6 @@ const _ = require("lodash");
 
 let io = null;
 
-// const users = []
-
 const rooms = [
   {
     id: "lobby",
@@ -33,18 +31,40 @@ const handlePlayerJoin = async function (username, callback) {
     player1 = room.usernames[0];
     player2 = room.usernames[1];
 
-    // Starta ett spel
-    startGame(player1, player2, rooms);
+
+    let gameRoom = "gameroom";
+    let num = 1;
+  
+    do {
+      gameRoom += num;
+      num++;
+    } while (rooms.find((room) => room.id === gameRoom));
+  
+    const newGameRoom = {
+      id: gameRoom,
+      usernames: [player1, player2],
+    };
+  
+    rooms.push(newGameRoom);
+  
+    // console.log(this)
+
+    this.join(gameRoom);
+  
+    // callback({
+    //   success: true,
+    //   gameRoom,
+    // });
 
     // Ta bort två första spelarna från lobbyn  (FUNKAR INTE, UNDERSÖK)
     room.usernames.splice(0, 2);
+
   } else {
     // Skicka till waiting-screen
     pendingScreen();
   }
 };
 
-const startGame = function (player1, player2, rooms, callback) {
   /* 
     (X) Skapa ett objekt som är ett rum där namnet genereras för varje gång två spelare matchar.
 
@@ -55,46 +75,15 @@ const startGame = function (player1, player2, rooms, callback) {
     ( ) Koppla funktionen till script.js, kanske via module.export längst ner i filen
   */
 
-  // Rumsnamnsgenerator för att skapa unikt spelrum
-  let gameRoom = "gameroom";
-  let num = 1;
-
-  do {
-    gameRoom += num;
-    num++;
-  } while (rooms.find((room) => room.id === gameRoom));
-
-  const newGameRoom = {
-    id: gameRoom,
-    usernames: [player1, player2],
-  };
-
-  console.log(this);
-
-  rooms.push(newGameRoom);
-
-  this.join(gameRoom);
-
-  callback({
-    success: true,
-    gameRoom,
-  });
-
-  // behövs emit här?
-  // För att visa username på motståndaren
-  this.broadcast.to(gameRoom).emit("player:list");
-};
 
 const pendingScreen = function () {
   console.log("Waiting for opponent");
 };
 
-module.exports = function(socket, _io) {
+module.exports = function (socket, _io) {
   io = _io;
 
   io.emit("new-connection", "A new user connected");
 
   socket.on("user:joined", handlePlayerJoin);
 };
-
-// handlePlayerJoin();
