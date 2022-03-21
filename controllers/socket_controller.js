@@ -16,7 +16,7 @@ const rooms = [
   },
 ];
 
-const handlePlayerJoin = function (username, callback) {
+const handlePlayerJoin = async function (username, callback) {
   debug(`User: ${username}, Socket id: ${this.id} wants to join lobby`);
 
   let player1;
@@ -69,6 +69,8 @@ const startGame = function (player1, player2, rooms, callback) {
     usernames: [player1, player2],
   };
 
+  console.log(this);
+
   rooms.push(newGameRoom);
 
   this.join(gameRoom);
@@ -87,7 +89,7 @@ const pendingScreen = function () {
   console.log("Waiting for opponent");
 };
 
-module.exports = function (socket, io) {
+module.exports = function(socket, _io) {
   io = _io;
 
   io.emit("new-connection", "A new user connected");
