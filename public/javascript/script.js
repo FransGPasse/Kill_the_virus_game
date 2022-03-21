@@ -1,31 +1,97 @@
 "use strict";
 
-
 /*
-*   Server-to-front-end functions (( ARBETSTITEL ))
-*
-*/
+ *   Server-to-front-end functions (( ARBETSTITEL ))
+ *
+ */
+
 const socket = io();
 
+let username = null;
 
 socket.on("user:connected", (username) => {
-  return username;
-})
-
-
-
+  console.log("Lyssnar på user:connected");
+});
 
 /*
-*   Game functions
-*
-*/
+ *   Game functions
+ *
+ */
 
-let cursorImages = ["Handsprit.png", "Handsprit@2x", "Handsprit@3x"];
 let virus = document.querySelector("#virus");
+
+/* Hämtar alla de olika skärmarna vi använder */
+let firstScreen = document.querySelector(".first-screen");
+let secondScreen = document.querySelector(".second-screen");
+let gameScreen = document.querySelector("#game");
+
+/* Hämtar knappen där man skriver in lösenord */
+let submitUsername = document.querySelector("#submit-username");
+
 let rounds = 10;
 let clickedTime;
 let createdTime;
 let reactionTime;
+let count = 3;
+
+const searchForGame = () => {
+  firstScreen.classList.toggle("hidden");
+  secondScreen.classList.toggle("hidden");
+};
+
+submitUsername.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  searchForGame();
+
+  username = submitUsername.username.value;
+
+  let welcomeUser = document.querySelector("#welcome-user");
+
+  welcomeUser.innerHTML = "Welcome, " + username;
+
+  socket.emit("user:joined", username);
+});
+
+// COUNTDOWN FUNCTION
+// function endCountdown() {
+//   console.log("starting the game now");
+// }
+
+// function handleTimer() {
+//   if (count === -1) {
+//     clearInterval(timer);
+//     endCountdown();
+//   } else {
+//     document.querySelector(".countdown").innerHTML = count;
+//     count--;
+//   }
+// }
+
+// var timer = setInterval(function () {
+//   handleTimer(count);
+// }, 1000);
+// COUNTDOWN FUNCTION
+
+// Check if the cursor has been cliked, if so we run the function below
+document.onclick = () => applyCursorRippleEffect(event);
+
+// Functon to get the cursor effect on click
+function applyCursorRippleEffect(e) {
+  // Create a document for the effect
+  const ripple = document.createElement("div");
+  // Add the classname to the div
+  ripple.className = "ripple";
+  // Append the div to the body
+  document.body.appendChild(ripple);
+  // Get position of the cursor
+  ripple.style.left = `${e.clientX}px`;
+  ripple.style.top = `${e.clientY}px`;
+  // Add the animation
+  ripple.style.animation = "ripple-effect .4s  linear";
+  // Remove animation
+  ripple.onanimationend = () => document.body.removeChild(ripple);
+}
 
 virus.addEventListener("click", () => {
   // Get the clock after click
