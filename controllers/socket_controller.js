@@ -41,26 +41,38 @@ const handlePlayerJoin = async function (username, callback) {
 
     const newGameRoom = {
       id: gameRoom,
-      usernames: [player1, player2],
+      usernames: {
+        player_1: player1,
+        player_2: player2,
+      },
     };
 
     rooms.push(newGameRoom);
 
-    console.log(this);
+    // console.log(this)
 
-    this.join(gameRoom);
+    const activeGameRoom = rooms.find((room) => room.id === gameRoom);
 
+    this.join(activeGameRoom);
+
+    // UNDERSÖK VARFÖR CALLBACK INTE FUNKAR
     // callback({
     //   success: true,
-    //   gameRoom,
+    //   room: activeGameRoom,
     // });
 
-    // Ta bort två första spelarna från lobbyn  (FUNKAR INTE, UNDERSÖK)
+    // Fyll i motsvarande i BLANK
+    // this.emit("players:list", rooms.gameRoom.usernames);
+
+    // console.log(activeGameRoom.usernames)
+    // console.log(rooms)
+
+    this.broadcast.to(gameRoom).emit("players:list", activeGameRoom.usernames);
+
     room.usernames.splice(0, 2);
   } else {
     // Skicka till waiting-screen
-
-    pendingScreen();
+    console.log("Waiting for opponent");
   }
 };
 
@@ -73,10 +85,6 @@ const handlePlayerJoin = async function (username, callback) {
 
     ( ) Koppla funktionen till script.js, kanske via module.export längst ner i filen
   */
-
-const pendingScreen = function () {
-  console.log("Waiting for opponent");
-};
 
 module.exports = function (socket, _io) {
   io = _io;

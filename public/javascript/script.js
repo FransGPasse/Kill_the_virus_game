@@ -53,6 +53,27 @@ submitUsername.addEventListener("submit", (e) => {
   socket.emit("user:joined", username);
 });
 
+const updatePlayerList = (players) => {
+  document.querySelector("#opponent-score").innerHTML = Object.values(player)
+    .map((username) => `<span>${username}</span>`)
+    .join("");
+
+  secondScreen.classList.add("hidden");
+  gameScreen.classList.remove("hidden");
+
+  // INSERT EN GAMEPLAYFUNKTION
+};
+
+// Lyssna, på "player:list" efter uppdateringar på antalet användare från socket_controller.
+socket.on("players:list", (players) => {
+  console.log(players);
+  updateUserList(players);
+});
+
+/*
+  - Kolla updateUserList på johans kod och jämför => genom den funktionen, trigga spelmekaninen
+*/
+
 // COUNTDOWN FUNCTION
 // function endCountdown() {
 //   console.log("starting the game now");
