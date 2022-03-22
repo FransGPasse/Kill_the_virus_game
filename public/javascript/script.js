@@ -39,6 +39,8 @@ const searchForGame = () => {
   secondScreen.classList.toggle("hidden");
 };
 
+
+
 submitUsername.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -53,10 +55,10 @@ submitUsername.addEventListener("submit", (e) => {
   socket.emit("user:joined", username);
 });
 
-const updatePlayerList = (players) => {
-  document.querySelector("#opponent-score").innerHTML = Object.values(player)
-    .map((username) => `<span>${username}</span>`)
-    .join("");
+const updatePlayerList = (username) => {
+  // document.querySelector("#opponent-score").innerHTML = Object.values(player)
+  //   .map((username) => `<span>${username}</span>`)
+  //   .join("");
 
   secondScreen.classList.add("hidden");
   gameScreen.classList.remove("hidden");
@@ -65,10 +67,14 @@ const updatePlayerList = (players) => {
 };
 
 // Lyssna, på "player:list" efter uppdateringar på antalet användare från socket_controller.
-socket.on("players:list", (players) => {
-  console.log(players);
-  updateUserList(players);
-});
+socket.on('players:list', usernames => {
+  console.log('Vidare')
+  updatePlayerList(usernames)
+})
+
+
+
+
 
 /*
   - Kolla updateUserList på johans kod och jämför => genom den funktionen, trigga spelmekaninen
