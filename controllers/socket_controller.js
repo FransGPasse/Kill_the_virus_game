@@ -10,7 +10,7 @@ let io = null;
 const rooms = [
   {
     id: "lobby",
-    usernames: ["Kenny"],
+    usernames: [],
   },
 ];
 
@@ -31,26 +31,25 @@ const handlePlayerJoin = async function (username, callback) {
     player1 = room.usernames[0];
     player2 = room.usernames[1];
 
-
     let gameRoom = "gameroom";
     let num = 1;
-  
+
     do {
       gameRoom += num;
       num++;
     } while (rooms.find((room) => room.id === gameRoom));
-  
+
     const newGameRoom = {
       id: gameRoom,
       usernames: [player1, player2],
     };
-  
+
     rooms.push(newGameRoom);
-  
-    // console.log(this)
+
+    console.log(this);
 
     this.join(gameRoom);
-  
+
     // callback({
     //   success: true,
     //   gameRoom,
@@ -58,14 +57,14 @@ const handlePlayerJoin = async function (username, callback) {
 
     // Ta bort två första spelarna från lobbyn  (FUNKAR INTE, UNDERSÖK)
     room.usernames.splice(0, 2);
-
   } else {
     // Skicka till waiting-screen
+
     pendingScreen();
   }
 };
 
-  /* 
+/* 
     (X) Skapa ett objekt som är ett rum där namnet genereras för varje gång två spelare matchar.
 
     (X) Namnet ska genereras som exempelvis "gameroom" sen logik som lägger till en siffra för att namnet ska vara unikt. 
@@ -74,7 +73,6 @@ const handlePlayerJoin = async function (username, callback) {
 
     ( ) Koppla funktionen till script.js, kanske via module.export längst ner i filen
   */
-
 
 const pendingScreen = function () {
   console.log("Waiting for opponent");
