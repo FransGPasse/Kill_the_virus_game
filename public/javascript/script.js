@@ -39,6 +39,8 @@ const searchForGame = () => {
   secondScreen.classList.toggle("hidden");
 };
 
+
+
 submitUsername.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -53,22 +55,29 @@ submitUsername.addEventListener("submit", (e) => {
   socket.emit("user:joined", username);
 });
 
-const updatePlayerList = (players) => {
-  document.querySelector("#opponent-score").innerHTML = Object.values(player)
-    .map((username) => `<span>${username}</span>`)
-    .join("");
+const updatePlayerList = (username) => {
+  // document.querySelector("#opponent-score").innerHTML = Object.values(player)
+  //   .map((username) => `<span>${username}</span>`)
+  //   .join("");
 
   secondScreen.classList.add("hidden");
-  gameScreen.classList.remove("hidden");
+  gameScreen.classList.toggle("hidden");
 
   // INSERT EN GAMEPLAYFUNKTION
+
+  gamePlay();
+
 };
 
 // Lyssna, på "player:list" efter uppdateringar på antalet användare från socket_controller.
-socket.on("players:list", (players) => {
-  console.log(players);
-  updateUserList(players);
-});
+socket.on('players:list', usernames => {
+  console.log('Vidare')
+  updatePlayerList(usernames)
+})
+
+
+
+
 
 /*
   - Kolla updateUserList på johans kod och jämför => genom den funktionen, trigga spelmekaninen
@@ -94,6 +103,7 @@ socket.on("players:list", (players) => {
 // }, 1000);
 // COUNTDOWN FUNCTION
 
+
 // Check if the cursor has been cliked, if so we run the function below
 document.onclick = () => applyCursorRippleEffect(event);
 
@@ -114,7 +124,7 @@ function applyCursorRippleEffect(e) {
   ripple.onanimationend = () => document.body.removeChild(ripple);
 }
 
-virus.addEventListener("click", () => {
+const virusClick = virus.addEventListener("click", () => {
   // Get the clock after click
   clickedTime = Date.now();
   // Get the time in milliseconds
@@ -149,3 +159,12 @@ const generateNewPosition = () => {
   // Start the clock
   createdTime = Date.now();
 };
+
+const gamePlay = function () {
+
+  virusClick();
+
+  generateNewPosition();
+
+
+}

@@ -61,13 +61,15 @@ const handlePlayerJoin = async function (username, callback) {
     //   room: activeGameRoom,
     // });
 
-    // Fyll i motsvarande i BLANK
-    // this.emit("players:list", rooms.gameRoom.usernames);
-
     // console.log(activeGameRoom.usernames)
     // console.log(rooms)
 
-    this.broadcast.to(gameRoom).emit("players:list", activeGameRoom.usernames);
+    // console.log(activeGameRoom.usernames)
+    // this.broadcast.to(activeGameRoom.id).emit('players:list', activeGameRoom.usernames);
+    this.emit('players:list', activeGameRoom.usernames);
+
+
+    console.log(activeGameRoom.usernames)
 
     room.usernames.splice(0, 2);
   } else {
@@ -92,4 +94,5 @@ module.exports = function (socket, _io) {
   io.emit("new-connection", "A new user connected");
 
   socket.on("user:joined", handlePlayerJoin);
+
 };
