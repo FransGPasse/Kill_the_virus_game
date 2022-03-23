@@ -6,6 +6,7 @@ const debug = require("debug")("game:socket_controller");
 const _ = require("lodash");
 
 let io = null;
+let rounds;
 
 const rooms = [
   {
@@ -14,13 +15,103 @@ const rooms = [
   },
 ];
 
-const handlePlayerJoin = async function (username, callback) {
+/*
+const handleDisconnect = function() {
+  debug(`Client ${this.id} disconnected`);
+
+  // find the room that this socket is a part of
+  const gameRoom = rooms.find(room => room.usernames.hasOwnProperty(this.id));
+
+  console.log(this.id)
+  console.log("gameRoom:", gameRoom)
+  // console.log("gameRoom.id:", gameRoom.id)
+  // console.log("gameRoom.usernames", gameRoom.usernames)
+  // console.log("usernames[this.id]:", gameRoom.usernames[this.id])
+
+
+  // if socket was not in a room, dont broacast dosconnect
+  if (!gameRoom) {
+    return;
+  }
+
+  // let everyone in the gameRoom know that this user has disconnected
+  this.broadcast.to(gameRoom.id).emit('user:disconnected', gameRoom.usernames[this.id]);
+
+  // remove user from list of users in that gameRoom
+	delete gameRoom.usernames[this.id];
+
+  this.broadcast.to(gameRoom.id).emit('user:list', gameRoom.usernames)
+
+}
+*/
+
+const handlePlayerJoin = async function (username, gameRound, callback) {
   debug(`User: ${username}, Socket id: ${this.id} wants to join lobby`);
 
-  let player1;
-  let player2;
+  username[this.id] = username;
 
-  const room = rooms.find((room) => room.id === "lobby");
+  console.log("Username:", username)
+  console.log("username[this.id]:", this.id);
+
+
+  let joinGameRoom;
+  // let player1;
+  // let player2;
+  rounds = gameRound;
+
+  const lobby = rooms.find((room) => room.id === "lobby");
+
+  //  lobby.usernames < two, lägg till ny user
+  if (lobby.usernames.length<2) {
+    lobby.usernames.push({ id: this.id, username: username, points: 0, time: 0});
+  }
+
+  // Hitta ett room
+  rooms.forEach((room) => {
+    const players = this.adapter.rooms.get(room.id); // använd  lodash: _.size istället.
+    const numPlayers = players ? players.size : 0;
+
+    if (numPlayers < 2) {
+      joinGameRoom = room.id;
+    }
+  });
+
+
+  // Skapa nytt rum
+  if (!joinGameRoom) {
+    let gameRoom = "gameroom";
+    let num = 1;
+
+    // Generera unikt id
+    do {
+      gameRoom += num;
+      num++;
+    } while (rooms.find((room) => room.id === gameRoom));
+
+    rooms.push({ id: gameRoom, usernames: {} });
+  }
+
+  // Find the gamesession and add the player to it
+  const room = rooms.find(obj => obj.id === joinGameRoom);
+  room.usernames = { ...room.usernames, [this.id]: username}
+
+  // Skapa eller gå med i rum via joinGameRoom.
+  this.join(joinGameRoom);
+
+  // Varför funkar inte callbacken? Behövs den ens?
+  // callback({
+  //   succes: true,
+  //   room
+  // });
+
+  // är broadcast nödvändig?
+  this.broadcast.to(joinGameRoom).emit('players:list', room.usernames);
+
+
+
+
+  /** GAMLA VERSIONEN
+
 
   room.usernames.push(username);
 
@@ -76,17 +167,10 @@ const handlePlayerJoin = async function (username, callback) {
     // Skicka till waiting-screen
     console.log("Waiting for opponent");
   }
+
+  */
 };
 
-/* 
-    (X) Skapa ett objekt som är ett rum där namnet genereras för varje gång två spelare matchar.
-
-    (X) Namnet ska genereras som exempelvis "gameroom" sen logik som lägger till en siffra för att namnet ska vara unikt. 
-
-    ( ) Ta bort rummet efter avslutat spel
-
-    ( ) Koppla funktionen till script.js, kanske via module.export längst ner i filen
-  */
 
 module.exports = function (socket, _io) {
   io = _io;
@@ -95,4 +179,5 @@ module.exports = function (socket, _io) {
 
   socket.on("user:joined", handlePlayerJoin);
 
+  // socket.on("disconnect", handleDisconnect);
 };
