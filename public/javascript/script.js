@@ -39,8 +39,6 @@ const searchForGame = () => {
   secondScreen.classList.toggle("hidden");
 };
 
-
-
 submitUsername.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -68,25 +66,13 @@ const updatePlayerList = (username) => {
   // INSERT EN GAMEPLAYFUNKTION
 
   gamePlay();
-
 };
 
 // Lyssna, på "player:list" efter uppdateringar på antalet användare från socket_controller.
-socket.on('players:list', usernames => {
-  console.log('Vidare')
-  // updatePlayerList(usernames)
-
-  secondScreen.classList.add("hidden");
-  gameScreen.classList.toggle("hidden");
-
-  gamePlay();
-
-
-})
-
-
-
-
+socket.on("players:list", (usernames) => {
+  console.log("Vidare");
+  updatePlayerList(usernames);
+});
 
 /*
   - Kolla updateUserList på johans kod och jämför => genom den funktionen, trigga spelmekaninen
@@ -111,7 +97,6 @@ socket.on('players:list', usernames => {
 //   handleTimer(count);
 // }, 1000);
 // COUNTDOWN FUNCTION
-
 
 // Check if the cursor has been cliked, if so we run the function below
 document.onclick = () => applyCursorRippleEffect(event);
@@ -145,6 +130,7 @@ const virusClick = virus.addEventListener("click", () => {
     generateNewPosition();
     virus.style.visibility = "visible";
   }, parseInt(delay * 1000));
+  generateNewPosition();
 });
 
 // Function to generate new position for the virus
@@ -168,12 +154,3 @@ const generateNewPosition = () => {
   // Start the clock
   createdTime = Date.now();
 };
-
-const gamePlay = function () {
-
-  virusClick();
-
-  generateNewPosition();
-
-
-}
