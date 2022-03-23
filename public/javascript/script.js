@@ -53,24 +53,27 @@ submitUsername.addEventListener("submit", (e) => {
   socket.emit("user:joined", username);
 });
 
-const updatePlayerList = (username) => {
-  // document.querySelector("#opponent-score").innerHTML = Object.values(player)
-  //   .map((username) => `<span>${username}</span>`)
-  //   .join("");
+const updatePlayerList = (usernames) => {
+  document.querySelector("#opponent-score").innerHTML = Object.values(usernames)
+    .map((username) => `<span>${username}</span>`)
+    .join("");
 
-  console.log(username);
+  if (Object.keys(usernames).length == 2) {
+    secondScreen.classList.add("hidden");
 
-  secondScreen.classList.add("hidden");
-  gameScreen.classList.toggle("hidden");
+    gameScreen.classList.remove("hidden");
 
-  // INSERT EN GAMEPLAYFUNKTION
-
-  gamePlay();
+    gamePlay();
+  }
 };
 
 // Lyssna, på "player:list" efter uppdateringar på antalet användare från socket_controller.
 socket.on("players:list", (usernames) => {
   console.log("Vidare");
+
+  // Den här visar att usernames skickar med hela arrayen, alltså båda spelarnas username och socket id. Men bara när den andra spelaren ansulet.
+
+  console.log(usernames);
   updatePlayerList(usernames);
 });
 
@@ -98,6 +101,7 @@ socket.on("players:list", (usernames) => {
 // }, 1000);
 // COUNTDOWN FUNCTION
 
+
 // Check if the cursor has been cliked, if so we run the function below
 document.onclick = () => applyCursorRippleEffect(event);
 
@@ -118,20 +122,6 @@ function applyCursorRippleEffect(e) {
   ripple.onanimationend = () => document.body.removeChild(ripple);
 }
 
-const virusClick = virus.addEventListener("click", () => {
-  // Get the clock after click
-  clickedTime = Date.now();
-  // Get the time in milliseconds
-  reactionTime = (clickedTime - createdTime) / 1000;
-  document.querySelector("#your-score").innerHTML = reactionTime + "s";
-  virus.style.visibility = "hidden";
-  let delay = Math.floor(Math.random() * 5);
-  setTimeout(() => {
-    generateNewPosition();
-    virus.style.visibility = "visible";
-  }, parseInt(delay * 1000));
-  generateNewPosition();
-});
 
 // Function to generate new position for the virus
 const generateNewPosition = () => {
@@ -154,3 +144,21 @@ const generateNewPosition = () => {
   // Start the clock
   createdTime = Date.now();
 };
+const gamePlay = () => {
+
+  const virusClick = virus.addEventListener("click", () => {
+    // Get the clock after click
+    clickedTime = Date.now();
+    // Get the time in milliseconds
+    reactionTime = (clickedTime - createdTime) / 1000;
+    document.querySelector("#your-score").innerHTML = reactionTime + "s";
+    virus.style.visibility = "hidden";
+    let delay = Math.floor(Math.random() * 5);
+    setTimeout(() => {
+      generateNewPosition();
+      virus.style.visibility = "visible";
+    }, parseInt(delay * 1000));
+    generateNewPosition();
+  });
+  
+}
