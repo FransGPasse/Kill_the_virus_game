@@ -60,6 +60,8 @@ const updatePlayerList = (username) => {
   //   .map((username) => `<span>${username}</span>`)
   //   .join("");
 
+  console.log(username);
+
   secondScreen.classList.add("hidden");
   gameScreen.classList.toggle("hidden");
 
@@ -72,7 +74,14 @@ const updatePlayerList = (username) => {
 // Lyssna, på "player:list" efter uppdateringar på antalet användare från socket_controller.
 socket.on('players:list', usernames => {
   console.log('Vidare')
-  updatePlayerList(usernames)
+  // updatePlayerList(usernames)
+
+  secondScreen.classList.add("hidden");
+  gameScreen.classList.toggle("hidden");
+
+  gamePlay();
+
+
 })
 
 
