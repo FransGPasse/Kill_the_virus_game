@@ -61,9 +61,12 @@ const updatePlayerList = (username) => {
   //   .join("");
 
   secondScreen.classList.add("hidden");
-  gameScreen.classList.remove("hidden");
+  gameScreen.classList.toggle("hidden");
 
   // INSERT EN GAMEPLAYFUNKTION
+
+  gamePlay();
+
 };
 
 // Lyssna, på "player:list" efter uppdateringar på antalet användare från socket_controller.
@@ -100,6 +103,7 @@ socket.on('players:list', usernames => {
 // }, 1000);
 // COUNTDOWN FUNCTION
 
+
 // Check if the cursor has been cliked, if so we run the function below
 document.onclick = () => applyCursorRippleEffect(event);
 
@@ -120,7 +124,7 @@ function applyCursorRippleEffect(e) {
   ripple.onanimationend = () => document.body.removeChild(ripple);
 }
 
-virus.addEventListener("click", () => {
+const virusClick = virus.addEventListener("click", () => {
   // Get the clock after click
   clickedTime = Date.now();
   // Get the time in milliseconds
@@ -155,3 +159,12 @@ const generateNewPosition = () => {
   // Start the clock
   createdTime = Date.now();
 };
+
+const gamePlay = function () {
+
+  virusClick();
+
+  generateNewPosition();
+
+
+}
