@@ -107,7 +107,10 @@ const handlePlayerJoin = async function (username, gameRound, callback) {
   //   room
   // });
 
-  this.broadcast.to(joinGameRoom).emit("players:list", room.usernames);
+  if (lobby.length >= 2) {
+    io.to(joinGameRoom).emit("players:list", room.usernames);
+    lobby.splice(0, 2);
+  }
 
   /** GAMLA VERSIONEN
   room.usernames.push(username);
