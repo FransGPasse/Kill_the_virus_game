@@ -9,15 +9,16 @@ let io = null;
 let rounds;
 
 const rooms = [
-  {
-    id: "lobby",
-    usernames: [],
-  },
+  // {
+  //   id: "lobby",
+  //   usernames: [],
+  // },
 ];
 
-/*
+const lobby = [];
+
+
 const handleDisconnect = function() {
-  debug(`Client ${this.id} disconnected`);
 
   // find the room that this socket is a part of
   const gameRoom = rooms.find(room => room.usernames.hasOwnProperty(this.id));
@@ -29,41 +30,40 @@ const handleDisconnect = function() {
   // console.log("usernames[this.id]:", gameRoom.usernames[this.id])
 
 
-  // if socket was not in a room, dont broacast dosconnect
-  if (!gameRoom) {
-    return;
-  }
-
   // let everyone in the gameRoom know that this user has disconnected
-  this.broadcast.to(gameRoom.id).emit('user:disconnected', gameRoom.usernames[this.id]);
+  io.to(gameRoom.id).emit('user:disconnected', gameRoom.usernames[this.id]);
 
   // remove user from list of users in that gameRoom
 	delete gameRoom.usernames[this.id];
 
-  this.broadcast.to(gameRoom.id).emit('user:list', gameRoom.usernames)
+  io.to(gameRoom.id).emit('user:list', gameRoom.usernames)
 
 }
-*/
 
-const handlePlayerJoin = async function (username, gameRound, callback) {
+const handleGame = (reactionTime, gameRoomId, callback) => {
+  const currentRoom = rooms.find((room) => room.id === gameRoomId);
+  const clicks = currentRoom.click;
+  const players = currentRoom.usernames;
+  // få ut this.id
+  players[this.id].time = reactionTime;
+  clicks = { ...clicks, [this.id]: reactionTime };
+  console.log(clicks);
+};
+
+const handlePlayerJoin = async function (username, callback) {
   debug(`User: ${username}, Socket id: ${this.id} wants to join lobby`);
 
   username[this.id] = username;
 
-  console.log("Username:", username)
-  console.log("username[this.id]:", this.id);
-
-
   let joinGameRoom;
   // let player1;
   // let player2;
-  rounds = gameRound;
 
-  const lobby = rooms.find((room) => room.id === "lobby");
+  // const lobby = rooms.find((room) => room.id === "lobby");
 
   //  lobby.usernames < two, lägg till ny user
-  if (lobby.usernames.length<2) {
-    lobby.usernames.push({ id: this.id, username: username, points: 0, time: 0});
+  if (lobby.length < 2) {
+    lobby.push({ id: this.id, username: username, points: 0, time: 0 });
   }
 
   // Hitta ett room
@@ -76,7 +76,6 @@ const handlePlayerJoin = async function (username, gameRound, callback) {
     }
   });
 
-
   // Skapa nytt rum
   if (!joinGameRoom) {
     let gameRoom = "gameroom";
@@ -88,31 +87,36 @@ const handlePlayerJoin = async function (username, gameRound, callback) {
       num++;
     } while (rooms.find((room) => room.id === gameRoom));
 
-    rooms.push({ id: gameRoom, usernames: {} });
+    joinGameRoom = gameRoom;
+
+    rooms.push({ id: gameRoom, turns: 0, clicks: [], usernames: {} });
   }
 
   // Find the gamesession and add the player to it
-  const room = rooms.find(obj => obj.id === joinGameRoom);
-  room.usernames = { ...room.usernames, [this.id]: username}
+  const room = rooms.find((obj) => obj.id === joinGameRoom);
+
+  room.usernames = {
+    ...room.usernames,
+    [this.id]: { name: username, points: 0, time: 0 },
+  };
 
   // Skapa eller gå med i rum via joinGameRoom.
   this.join(joinGameRoom);
 
-  // Varför funkar inte callbacken? Behövs den ens?
-  // callback({
-  //   succes: true,
-  //   room
-  // });
+  // console.log("log 1:", joinGameRoom);
+  // console.log("log 2:", room);
+  // console.log("log 3:", room.usernames);
 
-  // är broadcast nödvändig?
-  this.broadcast.to(joinGameRoom).emit('players:list', room.usernames);
+  // console.log("socket rooms", io.sockets.adapter.rooms);
 
+  if (lobby.length >= 2) {
+    io.to(joinGameRoom).emit("players:list", room.usernames);
+    lobby.splice(0, 2);
+  }
 
-
+  callback(joinGameRoom);
 
   /** GAMLA VERSIONEN
-
-
   room.usernames.push(username);
 
   // Kolla om det är två eller fler users i lobbyn
@@ -171,7 +175,6 @@ const handlePlayerJoin = async function (username, gameRound, callback) {
   */
 };
 
-
 module.exports = function (socket, _io) {
   io = _io;
 
@@ -179,5 +182,7 @@ module.exports = function (socket, _io) {
 
   socket.on("user:joined", handlePlayerJoin);
 
-  // socket.on("disconnect", handleDisconnect);
+  socket.on("user:virusclick", handleGame);
+
+  socket.on("disconnect", handleDisconnect);
 };

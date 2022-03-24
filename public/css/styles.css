@@ -12,17 +12,14 @@
 body {
   height: 100vh;
   width: 100vw;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   background-color: #253e11;
   font-family: "Press Start 2P";
   font-size: var(--font-big);
   cursor: url("../assets/handsprit-stor.png"), auto;
-
   padding: 0em 2em;
 }
 
@@ -31,7 +28,6 @@ header {
   justify-content: center;
   align-items: center;
   color: var(--clr-opponent);
-  padding: 1.5em 0em;
   height: 20%;
   width: 100%;
 }
@@ -43,14 +39,12 @@ header {
 .first-screen {
   height: 100%;
   width: 100%;
-
+  position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   background-color: var(--clr-friendly);
-
   text-align: center;
 }
 
@@ -76,11 +70,12 @@ form {
 */
 
 .second-screen {
+  background-color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
+  position: absolute;
   height: 100%;
   width: 100%;
   gap: 5%;
@@ -226,14 +221,12 @@ form {
 }
 
 #board {
-  height: 80vh;
-  width: 100%;
-
+  min-height: 90%;
+  min-width: 80%;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
   align-items: center;
-
   gap: 5px;
 }
 
@@ -261,21 +254,23 @@ form {
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: var(--clr-friendly);
-
   font-size: var(--font-small);
-
   text-align: center;
-
-  width: 100%;
-  height: 70px;
-
-  margin-top: 1em;
+  min-width: 20%;
+  min-height: 90%;
+  margin-left: 1%;
+  flex-direction: column;
+  gap: 5%;
 }
 
 #scoreboard span {
   color: var(--clr-opponent);
+}
+
+#game {
+  display: flex;
+  flex-direction: row;
 }
 
 #score {
@@ -295,25 +290,25 @@ form {
 /* Small tablet size */
 @media screen and (min-width: 620px) {
   body {
-    background-color: pink;
+    background-color: white;
   }
 }
 
 /* Large tablet and laptop size */
 @media screen and (min-width: 960px) {
   body {
-    background-color: rgb(196, 125, 137);
+    background-color: white;
   }
 }
 
 /* Desktop size */
 @media screen and (min-width: 1200px) {
   body {
-    background-color: rgb(148, 52, 68);
+    background-color: white;
   }
 }
 
 /* Helper class */
 .hidden {
-  display: none;
+  visibility: hidden;
 }

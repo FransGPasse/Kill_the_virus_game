@@ -19,6 +19,7 @@ socket.on("user:connected", (username) => {
  */
 
 let virus = document.querySelector("#virus");
+let gameRoomId;
 
 /* Hämtar alla de olika skärmarna vi använder */
 let firstScreen = document.querySelector(".first-screen");
@@ -50,28 +51,30 @@ submitUsername.addEventListener("submit", (e) => {
 
   welcomeUser.innerHTML = "Welcome, " + username;
 
-  socket.emit("user:joined", username);
+  socket.emit("user:joined", username, (gameRoom) => {
+    gameRoomId = gameRoom;
+  });
 });
 
-const updatePlayerList = (username) => {
-  // document.querySelector("#opponent-score").innerHTML = Object.values(player)
-  //   .map((username) => `<span>${username}</span>`)
-  //   .join("");
+const updatePlayerList = (usernames) => {
+  document.querySelector("#opponent-score").innerHTML = Object.values(usernames)
+    .map((username) => `<span>${username}</span><br>`)
+    .join("");
 
-  secondScreen.classList.toggle("hidden");
-  gameScreen.classList.toggle("hidden");
-
-  console.log(username, "hej hej här är tvåan");
-  // INSERT EN GAMEPLAYFUNKTION
-
-  gamePlay();
+  if (Object.keys(usernames).length == 2) {
+    secondScreen.classList.add("hidden");
+    gameScreen.classList.remove("hidden");
+    gamePlay();
+  }
 };
 
 // Lyssna, på "player:list" efter uppdateringar på antalet användare från socket_controller.
 socket.on("players:list", (usernames) => {
-  console.log("Vidare 👍🏼");
-  console.log(usernames);
+  console.log("Vidare");
 
+  // Den här visar att usernames skickar med hela arrayen, alltså båda spelarnas username och socket id. Men bara när den andra spelaren ansulet.
+
+  console.log(usernames);
   updatePlayerList(usernames);
 });
 
@@ -99,6 +102,22 @@ socket.on("players:list", (usernames) => {
 // }, 1000);
 // COUNTDOWN FUNCTION
 
+let yourPoints = 0;
+let opponentPoints = 0;
+let yourTime;
+let opponentTime;
+
+const pointHandler = (yourTime) => {
+  console.log(yourTime);
+  if (yourTime > 0.5) {
+    ++yourPoints;
+    document.querySelector(".your-points").innerHTML = yourPoints;
+  } else {
+    ++opponentPoints;
+    document.querySelector(".enemy-points").innerHTML = opponentPoints;
+  }
+};
+
 // Check if the cursor has been cliked, if so we run the function below
 document.onclick = () => applyCursorRippleEffect(event);
 
@@ -118,21 +137,6 @@ function applyCursorRippleEffect(e) {
   // Remove animation
   ripple.onanimationend = () => document.body.removeChild(ripple);
 }
-
-const virusClick = virus.addEventListener("click", () => {
-  // Get the clock after click
-  clickedTime = Date.now();
-  // Get the time in milliseconds
-  reactionTime = (clickedTime - createdTime) / 1000;
-  document.querySelector("#your-score").innerHTML = reactionTime + "s";
-  virus.style.visibility = "hidden";
-  let delay = Math.floor(Math.random() * 5);
-  setTimeout(() => {
-    generateNewPosition();
-    virus.style.visibility = "visible";
-  }, parseInt(delay * 1000));
-  generateNewPosition();
-});
 
 // Function to generate new position for the virus
 const generateNewPosition = () => {
@@ -154,4 +158,27 @@ const generateNewPosition = () => {
 
   // Start the clock
   createdTime = Date.now();
+};
+
+const gamePlay = () => {
+  generateNewPosition();
+  const virusClick = virus.addEventListener("click", () => {
+    // Get the clock after click
+    clickedTime = Date.now();
+    // Get the time in milliseconds
+    reactionTime = (clickedTime - createdTime) / 1000;
+    let yourTime = (clickedTime - createdTime) / 1000;
+    document.querySelector("#your-score").innerHTML = reactionTime;
+    virus.style.visibility = "hidden";
+    pointHandler(yourTime);
+    let delay = Math.floor(Math.random() * 5);
+    setTimeout(() => {
+      generateNewPosition();
+      virus.style.visibility = "visible";
+    }, parseInt(delay * 1000));
+    generateNewPosition();
+    socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
+      updatePoints(data);
+    });
+  });
 };
