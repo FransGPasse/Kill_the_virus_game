@@ -17,9 +17,8 @@ const rooms = [
 
 const lobby = [];
 
-/*
+
 const handleDisconnect = function() {
-  debug(Client ${this.id} disconnected);
 
   // find the room that this socket is a part of
   const gameRoom = rooms.find(room => room.usernames.hasOwnProperty(this.id));
@@ -31,21 +30,16 @@ const handleDisconnect = function() {
   // console.log("usernames[this.id]:", gameRoom.usernames[this.id])
 
 
-  // if socket was not in a room, dont broacast dosconnect
-  if (!gameRoom) {
-    return;
-  }
-
   // let everyone in the gameRoom know that this user has disconnected
-  this.broadcast.to(gameRoom.id).emit('user:disconnected', gameRoom.usernames[this.id]);
+  io.to(gameRoom.id).emit('user:disconnected', gameRoom.usernames[this.id]);
 
   // remove user from list of users in that gameRoom
 	delete gameRoom.usernames[this.id];
 
-  this.broadcast.to(gameRoom.id).emit('user:list', gameRoom.usernames)
+  io.to(gameRoom.id).emit('user:list', gameRoom.usernames)
 
 }
-*/
+
 const handleGame = (reactionTime, gameRoomId, callback) => {
   const currentRoom = rooms.find((room) => room.id === gameRoomId);
   const clicks = currentRoom.click;
@@ -187,7 +181,8 @@ module.exports = function (socket, _io) {
   io.emit("new-connection", "A new user connected");
 
   socket.on("user:joined", handlePlayerJoin);
+
   socket.on("user:virusclick", handleGame);
 
-  // socket.on("disconnect", handleDisconnect);
+  socket.on("disconnect", handleDisconnect);
 };
