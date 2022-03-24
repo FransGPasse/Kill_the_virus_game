@@ -46,8 +46,17 @@ const handleDisconnect = function() {
 
 }
 */
+const handleGame = (reactionTime, gameRoomId, callback) => {
+  const currentRoom = rooms.find((room) => room.id === gameRoomId);
+  const clicks = currentRoom.click;
+  const players = currentRoom.usernames;
+  // få ut this.id
+  players[this.id].time = reactionTime;
+  clicks = { ...clicks, [this.id]: reactionTime };
+  console.log(clicks);
+};
 
-const handlePlayerJoin = async function (username, gameRound, callback) {
+const handlePlayerJoin = async function (username, callback) {
   debug(`User: ${username}, Socket id: ${this.id} wants to join lobby`);
 
   username[this.id] = username;
@@ -55,7 +64,6 @@ const handlePlayerJoin = async function (username, gameRound, callback) {
   let joinGameRoom;
   // let player1;
   // let player2;
-  rounds = gameRound;
 
   // const lobby = rooms.find((room) => room.id === "lobby");
 
@@ -87,30 +95,32 @@ const handlePlayerJoin = async function (username, gameRound, callback) {
 
     joinGameRoom = gameRoom;
 
-    rooms.push({ id: gameRoom, usernames: {} });
+    rooms.push({ id: gameRoom, turns: 0, clicks: [], usernames: {} });
   }
 
   // Find the gamesession and add the player to it
   const room = rooms.find((obj) => obj.id === joinGameRoom);
-  // console.log("log 1:", joinGameRoom);
-  // console.log("log 2:", room);
-  // console.log("log 3:", room.usernames);
 
-  room.usernames = { ...room.usernames, [this.id]: username };
+  room.usernames = {
+    ...room.usernames,
+    [this.id]: { name: username, points: 0, time: 0 },
+  };
 
   // Skapa eller gå med i rum via joinGameRoom.
   this.join(joinGameRoom);
 
-  // Varför funkar inte callbacken? Behövs den ens?
-  // callback({
-  //   succes: true,
-  //   room
-  // });
+  // console.log("log 1:", joinGameRoom);
+  // console.log("log 2:", room);
+  // console.log("log 3:", room.usernames);
+
+  // console.log("socket rooms", io.sockets.adapter.rooms);
 
   if (lobby.length >= 2) {
     io.to(joinGameRoom).emit("players:list", room.usernames);
     lobby.splice(0, 2);
   }
+
+  callback(joinGameRoom);
 
   /** GAMLA VERSIONEN
   room.usernames.push(username);
@@ -177,6 +187,7 @@ module.exports = function (socket, _io) {
   io.emit("new-connection", "A new user connected");
 
   socket.on("user:joined", handlePlayerJoin);
+  socket.on("user:virusclick", handleGame);
 
   // socket.on("disconnect", handleDisconnect);
 };

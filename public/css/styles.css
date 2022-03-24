@@ -221,8 +221,8 @@ form {
 }
 
 #board {
-  height: 90%;
-  width: 80%;
+  min-height: 90%;
+  min-width: 80%;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
@@ -257,8 +257,8 @@ form {
   color: var(--clr-friendly);
   font-size: var(--font-small);
   text-align: center;
-  width: 20%;
-  height: 90%;
+  min-width: 20%;
+  min-height: 90%;
   margin-left: 1%;
   flex-direction: column;
   gap: 5%;
