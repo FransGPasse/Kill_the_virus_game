@@ -19,6 +19,7 @@ socket.on("user:connected", (username) => {
  */
 
 let virus = document.querySelector("#virus");
+let gameRoomId;
 
 /* Hämtar alla de olika skärmarna vi använder */
 let firstScreen = document.querySelector(".first-screen");
@@ -50,7 +51,9 @@ submitUsername.addEventListener("submit", (e) => {
 
   welcomeUser.innerHTML = "Welcome, " + username;
 
-  socket.emit("user:joined", username);
+  socket.emit("user:joined", username, (gameRoom) => {
+    gameRoomId = gameRoom;
+  });
 });
 
 const updatePlayerList = (usernames) => {
@@ -174,5 +177,8 @@ const gamePlay = () => {
       virus.style.visibility = "visible";
     }, parseInt(delay * 1000));
     generateNewPosition();
+    socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
+      updatePoints(data);
+    });
   });
 };
