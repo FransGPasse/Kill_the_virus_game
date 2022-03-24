@@ -109,10 +109,6 @@ const handlePlayerJoin = async function (username, gameRound, callback) {
 
   this.broadcast.to(joinGameRoom).emit("players:list", room.usernames);
 
-
-
-
-  
   /** GAMLA VERSIONEN
   room.usernames.push(username);
 
