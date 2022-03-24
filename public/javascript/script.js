@@ -55,14 +55,12 @@ submitUsername.addEventListener("submit", (e) => {
 
 const updatePlayerList = (usernames) => {
   document.querySelector("#opponent-score").innerHTML = Object.values(usernames)
-    .map((username) => `<span>${username}</span>`)
+    .map((username) => `<span>${username}</span><br>`)
     .join("");
 
   if (Object.keys(usernames).length == 2) {
     secondScreen.classList.add("hidden");
-
     gameScreen.classList.remove("hidden");
-
     gamePlay();
   }
 };
@@ -101,6 +99,21 @@ socket.on("players:list", (usernames) => {
 // }, 1000);
 // COUNTDOWN FUNCTION
 
+let yourPoints = 0;
+let opponentPoints = 0;
+let yourTime;
+let opponentTime;
+
+const pointHandler = (yourTime) => {
+  console.log(yourTime);
+  if (yourTime > 0.5) {
+    ++yourPoints;
+    document.querySelector(".your-points").innerHTML = yourPoints;
+  } else {
+    ++opponentPoints;
+    document.querySelector(".enemy-points").innerHTML = opponentPoints;
+  }
+};
 
 // Check if the cursor has been cliked, if so we run the function below
 document.onclick = () => applyCursorRippleEffect(event);
@@ -121,7 +134,6 @@ function applyCursorRippleEffect(e) {
   // Remove animation
   ripple.onanimationend = () => document.body.removeChild(ripple);
 }
-
 
 // Function to generate new position for the virus
 const generateNewPosition = () => {
@@ -144,15 +156,18 @@ const generateNewPosition = () => {
   // Start the clock
   createdTime = Date.now();
 };
-const gamePlay = () => {
 
+const gamePlay = () => {
+  generateNewPosition();
   const virusClick = virus.addEventListener("click", () => {
     // Get the clock after click
     clickedTime = Date.now();
     // Get the time in milliseconds
     reactionTime = (clickedTime - createdTime) / 1000;
-    document.querySelector("#your-score").innerHTML = reactionTime + "s";
+    let yourTime = (clickedTime - createdTime) / 1000;
+    document.querySelector("#your-score").innerHTML = reactionTime;
     virus.style.visibility = "hidden";
+    pointHandler(yourTime);
     let delay = Math.floor(Math.random() * 5);
     setTimeout(() => {
       generateNewPosition();
@@ -160,5 +175,4 @@ const gamePlay = () => {
     }, parseInt(delay * 1000));
     generateNewPosition();
   });
-  
-}
+};
