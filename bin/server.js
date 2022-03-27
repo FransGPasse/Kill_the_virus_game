@@ -12,7 +12,7 @@ const { debug } = require("console");
  *   Port
  */
 const port = normalizePort("3000");
-app.set("port", port);
+app.set("port", process.env.PORT || 3000);
 
 /*
  *   Create HTTP server
