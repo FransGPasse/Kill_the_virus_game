@@ -57,8 +57,13 @@ submitUsername.addEventListener("submit", (e) => {
 });
 
 const updatePlayerList = (usernames) => {
+  console.log(usernames);
+
   document.querySelector("#opponent-score").innerHTML = Object.values(usernames)
-    .map((username) => `<span>${username}</span><br>`)
+    .map(
+      (username) => `<li>
+       ${username.name}</li>`
+    )
     .join("");
 
   if (Object.keys(usernames).length == 2) {
@@ -72,10 +77,9 @@ const updatePlayerList = (usernames) => {
 socket.on("players:list", (usernames) => {
   console.log("Vidare");
 
-  // Den här visar att usernames skickar med hela arrayen, alltså båda spelarnas username och socket id. Men bara när den andra spelaren ansulet.
-
   console.log(usernames);
   updatePlayerList(usernames);
+  // Den här visar att usernames skickar med hela arrayen, alltså båda spelarnas username och socket id. Men bara när den andra spelaren ansulet.
 });
 
 /*
@@ -177,6 +181,7 @@ const gamePlay = () => {
       virus.style.visibility = "visible";
     }, parseInt(delay * 1000));
     generateNewPosition();
+
     socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
       updatePoints(data);
     });
