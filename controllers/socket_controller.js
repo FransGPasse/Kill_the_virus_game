@@ -6,48 +6,86 @@ const debug = require("debug")("game:socket_controller");
 const _ = require("lodash");
 
 let io = null;
-let rounds;
+// let rounds;
 
-const rooms = [
-  // {
-  //   id: "lobby",
-  //   usernames: [],
-  // },
-];
+const rooms = [];
 
 const lobby = [];
 
-
-const handleDisconnect = function() {
-
+const handleDisconnect = function () {
   // find the room that this socket is a part of
-  const gameRoom = rooms.find(room => room.usernames.hasOwnProperty(this.id));
-
-  console.log(this.id)
-  console.log("gameRoom:", gameRoom)
+  // const gameRoom = rooms.find((room) => room.username.hasOwnProperty(this.id));
+  // console.log(rooms.usernames.hasOwnProperty);
+  // console.log(this.id);
+  // console.log("gameRoom:", gameRoom);
   // console.log("gameRoom.id:", gameRoom.id)
-  // console.log("gameRoom.usernames", gameRoom.usernames)
-  // console.log("usernames[this.id]:", gameRoom.usernames[this.id])
-
-
+  // console.log("gameRoom.username", gameRoom.username)
+  // console.log("username[this.id]:", gameRoom.username[this.id])
   // let everyone in the gameRoom know that this user has disconnected
-  io.to(gameRoom.id).emit('user:disconnected', gameRoom.usernames[this.id]);
-
+  // io.to(gameRoom.id).emit("user:disconnected", gameRoom.username[this.id]);
   // remove user from list of users in that gameRoom
-	delete gameRoom.usernames[this.id];
+  // delete gameRoom.username[this.id];
+  // io.to(gameRoom.id).emit("user:list", gameRoom.username);
+};
 
-  io.to(gameRoom.id).emit('user:list', gameRoom.usernames)
-
-}
-
-const handleGame = (reactionTime, gameRoomId, callback) => {
+const handleGame = async function (reactionTime, gameRoomId, callback) {
+  // "greppa" rätt rum
   const currentRoom = rooms.find((room) => room.id === gameRoomId);
-  const clicks = currentRoom.click;
   const players = currentRoom.usernames;
-  // få ut this.id
+  let player = players[this.id];
+
+  // tilldela tiden för spelaren att klicka
   players[this.id].time = reactionTime;
-  clicks = { ...clicks, [this.id]: reactionTime };
-  console.log(clicks);
+
+  player = { ...player, time: reactionTime };
+  currentRoom.clicks.push({ ...player, id: this.id });
+
+  // console.log(this.id);
+  // console.log(currentRoom);
+
+  this.emit("player:point", this.id, currentRoom);
+
+  io.to(gameRoomId).emit("player:time", reactionTime);
+
+  if (currentRoom.clicks.length === 2) {
+    currentRoom.turns = currentRoom.turns + 1;
+
+    const roundWinner = currentRoom.clicks[0].id;
+    const opponentId = Object.values(currentRoom.usernames).find(obj => obj.id !== this.id).id;
+
+    // console.log(roundWinner)
+    // console.log(opponentId)
+    console.log(currentRoom)
+
+    currentRoom.usernames[roundWinner].points + 1;
+
+    io.to(gameRoomId).emit('player:win', this.id, roundWinner, opponentId, currentRoom);
+
+    currentRoom.clicks = []
+
+  }
+
+  // const opponent = players.find((player) => player.id !== this.id);
+
+  // let clicks = currentRoom.click;
+  // // clicks = { ...clicks, [this.id]: reactionTime };
+  // clicks.push("x");
+
+  // callback({
+  //   opponentTime,
+  // });
+
+
+  // console.log(currentRoom)
+
+  // console.log(currentRoom);
+
+  // const currentRoom = rooms.find((room) => room.id === gameRoomId);
+  // const players = currentRoom.usernames;
+  // få ut this.id
+  // players[this.id].time = reactionTime;
+  // clicks = { ...clicks, [this.id]: reactionTime };
+  // console.log(clicks);
 };
 
 const handlePlayerJoin = async function (username, callback) {
@@ -56,10 +94,6 @@ const handlePlayerJoin = async function (username, callback) {
   username[this.id] = username;
 
   let joinGameRoom;
-  // let player1;
-  // let player2;
-
-  // const lobby = rooms.find((room) => room.id === "lobby");
 
   //  lobby.usernames < two, lägg till ny user
   if (lobby.length < 2) {
@@ -97,7 +131,7 @@ const handlePlayerJoin = async function (username, callback) {
 
   room.usernames = {
     ...room.usernames,
-    [this.id]: { name: username, points: 0, time: 0 },
+    [this.id]: { id: this.id, name: username, points: 0, time: 0 },
   };
 
   // Skapa eller gå med i rum via joinGameRoom.
@@ -106,8 +140,6 @@ const handlePlayerJoin = async function (username, callback) {
   // console.log("log 1:", joinGameRoom);
   // console.log("log 2:", room);
   // console.log("log 3:", room.usernames);
-
-  // console.log("socket rooms", io.sockets.adapter.rooms);
 
   if (lobby.length >= 2) {
     io.to(joinGameRoom).emit("players:list", room.usernames);

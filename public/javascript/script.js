@@ -57,8 +57,13 @@ submitUsername.addEventListener("submit", (e) => {
 });
 
 const updatePlayerList = (usernames) => {
+  console.log(usernames);
+
   document.querySelector("#opponent-score").innerHTML = Object.values(usernames)
-    .map((username) => `<span>${username}</span><br>`)
+    .map(
+      (username) => `<li>
+       ${username.name}</li>`
+    )
     .join("");
 
   if (Object.keys(usernames).length == 2) {
@@ -72,10 +77,9 @@ const updatePlayerList = (usernames) => {
 socket.on("players:list", (usernames) => {
   console.log("Vidare");
 
-  // Den här visar att usernames skickar med hela arrayen, alltså båda spelarnas username och socket id. Men bara när den andra spelaren ansulet.
-
   console.log(usernames);
   updatePlayerList(usernames);
+  // Den här visar att usernames skickar med hela arrayen, alltså båda spelarnas username och socket id. Men bara när den andra spelaren ansulet.
 });
 
 /*
@@ -162,23 +166,30 @@ const generateNewPosition = () => {
 
 const gamePlay = () => {
   generateNewPosition();
+
   const virusClick = virus.addEventListener("click", () => {
     // Get the clock after click
     clickedTime = Date.now();
+
     // Get the time in milliseconds
     reactionTime = (clickedTime - createdTime) / 1000;
     let yourTime = (clickedTime - createdTime) / 1000;
+
     document.querySelector("#your-score").innerHTML = reactionTime;
     virus.style.visibility = "hidden";
-    pointHandler(yourTime);
+
+    // pointHandler(yourTime);
+    // generateNewPosition();
+
+    socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
+      updatePoints(data);
+    });
+
     let delay = Math.floor(Math.random() * 5);
+
     setTimeout(() => {
       generateNewPosition();
       virus.style.visibility = "visible";
     }, parseInt(delay * 1000));
-    generateNewPosition();
-    socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
-      updatePoints(data);
-    });
   });
 };
