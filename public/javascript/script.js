@@ -191,5 +191,13 @@ const gamePlay = () => {
       generateNewPosition();
       virus.style.visibility = "visible";
     }, parseInt(delay * 1000));
+<<<<<<< HEAD
+=======
+    generateNewPosition();
+
+    socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
+      updatePoints(data);
+    });
+>>>>>>> main
   });
 };

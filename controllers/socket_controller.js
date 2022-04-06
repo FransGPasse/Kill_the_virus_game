@@ -14,6 +14,7 @@ const lobby = [];
 
 const handleDisconnect = function () {
   // find the room that this socket is a part of
+<<<<<<< HEAD
   // const gameRoom = rooms.find((room) => room.username.hasOwnProperty(this.id));
   // console.log(rooms.usernames.hasOwnProperty);
   // console.log(this.id);
@@ -81,6 +82,28 @@ const handleGame = async function (reactionTime, gameRoomId, callback) {
   // console.log(currentRoom);
 
   // const currentRoom = rooms.find((room) => room.id === gameRoomId);
+=======
+  const gameRoom = rooms.find((room) => room.usernames.hasOwnProperty(this.id));
+
+  console.log(this.id);
+  console.log("gameRoom:", gameRoom);
+  // console.log("gameRoom.id:", gameRoom.id)
+  // console.log("gameRoom.usernames", gameRoom.usernames)
+  // console.log("usernames[this.id]:", gameRoom.usernames[this.id])
+
+  // let everyone in the gameRoom know that this user has disconnected
+  io.to(gameRoom.id).emit("user:disconnected", gameRoom.usernames[this.id]);
+
+  // remove user from list of users in that gameRoom
+  delete gameRoom.usernames[this.id];
+
+  io.to(gameRoom.id).emit("user:list", gameRoom.usernames);
+};
+
+const handleGame = (reactionTime, gameRoomId, callback) => {
+  // const currentRoom = rooms.find((room) => room.id === gameRoomId);
+  // const clicks = currentRoom.click;
+>>>>>>> main
   // const players = currentRoom.usernames;
   // få ut this.id
   // players[this.id].time = reactionTime;
