@@ -14,7 +14,6 @@ const lobby = [];
 
 const handleDisconnect = function () {
   // find the room that this socket is a part of
-<<<<<<< HEAD
   // const gameRoom = rooms.find((room) => room.username.hasOwnProperty(this.id));
   // console.log(rooms.usernames.hasOwnProperty);
   // console.log(this.id);
@@ -51,16 +50,17 @@ const handleGame = async function (reactionTime, gameRoomId, callback) {
   if (currentRoom.clicks.length === 2) {
     currentRoom.turns = currentRoom.turns + 1;
 
-    const roundWinner = currentRoom.clicks[0].id;
+    const roundWinnerId = currentRoom.clicks[0].id;
     const opponentId = Object.values(currentRoom.usernames).find(obj => obj.id !== this.id).id;
 
-    // console.log(roundWinner)
-    // console.log(opponentId)
-    console.log(currentRoom)
+    // console.log(currentRoom)
 
-    currentRoom.usernames[roundWinner].points + 1;
 
-    io.to(gameRoomId).emit('player:win', this.id, roundWinner, opponentId, currentRoom);
+    currentRoom.usernames[roundWinnerId].points += 1;
+
+    // console.log(currentRoom.usernames[roundWinnerId].points);
+
+    io.to(gameRoomId).emit('player:win', this.id, roundWinnerId, opponentId, currentRoom);
 
     currentRoom.clicks = []
 
@@ -82,28 +82,6 @@ const handleGame = async function (reactionTime, gameRoomId, callback) {
   // console.log(currentRoom);
 
   // const currentRoom = rooms.find((room) => room.id === gameRoomId);
-=======
-  const gameRoom = rooms.find((room) => room.usernames.hasOwnProperty(this.id));
-
-  console.log(this.id);
-  console.log("gameRoom:", gameRoom);
-  // console.log("gameRoom.id:", gameRoom.id)
-  // console.log("gameRoom.usernames", gameRoom.usernames)
-  // console.log("usernames[this.id]:", gameRoom.usernames[this.id])
-
-  // let everyone in the gameRoom know that this user has disconnected
-  io.to(gameRoom.id).emit("user:disconnected", gameRoom.usernames[this.id]);
-
-  // remove user from list of users in that gameRoom
-  delete gameRoom.usernames[this.id];
-
-  io.to(gameRoom.id).emit("user:list", gameRoom.usernames);
-};
-
-const handleGame = (reactionTime, gameRoomId, callback) => {
-  // const currentRoom = rooms.find((room) => room.id === gameRoomId);
-  // const clicks = currentRoom.click;
->>>>>>> main
   // const players = currentRoom.usernames;
   // få ut this.id
   // players[this.id].time = reactionTime;

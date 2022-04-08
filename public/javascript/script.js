@@ -57,7 +57,7 @@ submitUsername.addEventListener("submit", (e) => {
 });
 
 const updatePlayerList = (usernames) => {
-  console.log(usernames);
+  // console.log(usernames);
 
   document.querySelector("#opponent-score").innerHTML = Object.values(usernames)
     .map(
@@ -77,7 +77,7 @@ const updatePlayerList = (usernames) => {
 socket.on("players:list", (usernames) => {
   console.log("Vidare");
 
-  console.log(usernames);
+  // console.log(usernames);
   updatePlayerList(usernames);
   // Den här visar att usernames skickar med hela arrayen, alltså båda spelarnas username och socket id. Men bara när den andra spelaren ansulet.
 });
@@ -111,15 +111,25 @@ let opponentPoints = 0;
 let yourTime;
 let opponentTime;
 
+socket.on('player:point', (playerid, gameRoomId) => {
+  const turn = gameRoomId.turn;
+  const { name, time } = gameRoomId.usernames[playerid]
+
+  gameRoomId = turn;
+})
+
+
 const pointHandler = (yourTime) => {
-  console.log(yourTime);
-  if (yourTime > 0.5) {
-    ++yourPoints;
-    document.querySelector(".your-points").innerHTML = yourPoints;
-  } else {
-    ++opponentPoints;
-    document.querySelector(".enemy-points").innerHTML = opponentPoints;
-  }
+  // console.log(yourTime);
+  // if (yourTime > 0.5) {
+  //   ++yourPoints;
+  //   document.querySelector(".your-points").innerHTML = yourPoints;
+  // } else {
+  //   ++opponentPoints;
+  //   document.querySelector(".enemy-points").innerHTML = opponentPoints;
+  // }
+
+
 };
 
 // Check if the cursor has been cliked, if so we run the function below
@@ -155,7 +165,7 @@ const generateNewPosition = () => {
     gridRowStart: randomGridNumberY,
     gridRowEnd: ++randomGridNumberY,
   };
-  console.log(randomGrid);
+  // console.log(randomGrid);
 
   // Assign the object to the virus so it moves around on every click
   Object.assign(virus.style, randomGrid);
@@ -191,13 +201,29 @@ const gamePlay = () => {
       generateNewPosition();
       virus.style.visibility = "visible";
     }, parseInt(delay * 1000));
-<<<<<<< HEAD
-=======
     generateNewPosition();
 
-    socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
-      updatePoints(data);
-    });
->>>>>>> main
+    // socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
+    //   updatePoints(data);
+    // });
   });
 };
+
+socket.on('player:win', (username, roundWinner, opponentId, currentRoom) => {
+  console.log('hit');
+  const players = currentRoom.usernames;
+  const thisPlayer = players[username];
+  // const playerWinner = players[roundWinner];
+  const opponent = players[opponentId];
+
+  console.log('This player:'. thisPlayer);
+  console.log('Opponent:', opponent);
+
+  document.querySelector(".your-points").innerHTML = thisPlayer.points;
+
+  document.querySelector(".enemy-points").innerHTML = opponent.points;
+
+  if (currentRoom.turn < 10) {
+    gamePlay();
+  }
+});
