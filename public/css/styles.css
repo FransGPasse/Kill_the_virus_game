@@ -28,7 +28,7 @@ header {
   justify-content: center;
   align-items: center;
   color: var(--clr-opponent);
-  height: 20%;
+  height: 5rem;
   width: 100%;
 }
 
@@ -271,6 +271,8 @@ form {
 #game {
   display: flex;
   flex-direction: row;
+  min-height: 80%;
+  min-width: 80%;
 }
 
 #score {
