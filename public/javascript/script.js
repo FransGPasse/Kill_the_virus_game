@@ -24,7 +24,7 @@ let gameRoomId;
 /* Hämtar alla de olika skärmarna vi använder */
 let firstScreen = document.querySelector(".first-screen");
 let secondScreen = document.querySelector(".second-screen");
-let gameScreen = document.querySelector("#game");
+let gameScreen = document.querySelector(".game-screen");
 
 /* Hämtar knappen där man skriver in lösenord */
 let submitUsername = document.querySelector("#submit-username");
@@ -111,13 +111,12 @@ let opponentPoints = 0;
 let yourTime;
 let opponentTime;
 
-socket.on('player:point', (playerid, gameRoomId) => {
+socket.on("player:point", (playerid, gameRoomId) => {
   const turn = gameRoomId.turn;
-  const { name, time } = gameRoomId.usernames[playerid]
+  const { name, time } = gameRoomId.usernames[playerid];
 
   gameRoomId = turn;
-})
-
+});
 
 const pointHandler = (yourTime) => {
   // console.log(yourTime);
@@ -128,8 +127,6 @@ const pointHandler = (yourTime) => {
   //   ++opponentPoints;
   //   document.querySelector(".enemy-points").innerHTML = opponentPoints;
   // }
-
-
 };
 
 // Check if the cursor has been cliked, if so we run the function below
@@ -209,15 +206,15 @@ const gamePlay = () => {
   });
 };
 
-socket.on('player:win', (username, roundWinner, opponentId, currentRoom) => {
-  console.log('hit');
+socket.on("player:win", (username, roundWinner, opponentId, currentRoom) => {
+  console.log("hit");
   const players = currentRoom.usernames;
   const thisPlayer = players[username];
-  // const playerWinner = players[roundWinner];
   const opponent = players[opponentId];
 
-  console.log('This player:'. thisPlayer);
-  console.log('Opponent:', opponent);
+  console.log("This player: ", thisPlayer);
+  console.log("Opponent: ", opponent);
+  console.log("Round winner: ", roundWinner);
 
   document.querySelector(".your-points").innerHTML = thisPlayer.points;
 
