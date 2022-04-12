@@ -24,7 +24,7 @@ let gameRoomId;
 /* Hämtar alla de olika skärmarna vi använder */
 let firstScreen = document.querySelector(".first-screen");
 let secondScreen = document.querySelector(".second-screen");
-let gameScreen = document.querySelector("#game");
+let gameScreen = document.querySelector(".game-screen");
 
 /* Hämtar knappen där man skriver in lösenord */
 let submitUsername = document.querySelector("#submit-username");
@@ -172,57 +172,55 @@ const generateNewPosition = () => {
 };
 
 const gamePlay = () => {
-  generateNewPosition();
-
-  const virusClick = virus.addEventListener("click", () => {
-    // Get the clock after click
-    clickedTime = Date.now();
-
-    // Get the time in milliseconds
-    reactionTime = (clickedTime - createdTime) / 1000;
-    let yourTime = (clickedTime - createdTime) / 1000;
-
-    document.querySelector("#your-score").innerHTML = reactionTime;
-    virus.style.visibility = "hidden";
-
-    // pointHandler(yourTime);
-    // generateNewPosition();
-
-    socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
-      updatePoints(data);
-    });
-
-    let delay = Math.floor(Math.random() * 5);
-
-    setTimeout(() => {
-      generateNewPosition();
-      virus.style.visibility = "visible";
-    }, parseInt(delay * 1000));
+  let delay = Math.floor(Math.random() * 5);
+  setTimeout(() => {
     generateNewPosition();
-
-    // socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
-    //   updatePoints(data);
-    // });
-  });
+    virus.style.visibility = "visible";
+  }, parseInt(delay * 1000));
+  generateNewPosition();
 };
+
+const virusClick = virus.addEventListener("click", () => {
+  // Get the clock after click
+  clickedTime = Date.now();
+
+  // Get the time in milliseconds
+  reactionTime = (clickedTime - createdTime) / 1000;
+  let yourTime = (clickedTime - createdTime) / 1000;
+
+  document.querySelector("#your-score").innerHTML = reactionTime;
+  virus.style.visibility = "hidden";
+
+  // pointHandler(yourTime);
+  // generateNewPosition();
+
+  socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
+    updatePoints(data);
+  });
+  // socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
+  //   updatePoints(data);
+  // });
+});
 
 socket.on("player:win", (username, roundWinner, opponentId, currentRoom) => {
   console.log("hit");
   const players = currentRoom.usernames;
   const thisPlayer = players[username];
-  // const playerWinner = players[roundWinner];
   const opponent = players[opponentId];
 
-  console.log("This player:".thisPlayer);
-  console.log("Opponent:", opponent);
-  console.log("Turns: ", currentRoom.turns);
+  console.log("This player: ", thisPlayer);
+  console.log("Opponent: ", opponent);
+  console.log("Round winner: ", roundWinner);
 
   document.querySelector(".your-points").innerHTML = thisPlayer.points;
 
   document.querySelector(".enemy-points").innerHTML = opponent.points;
 
-  if (currentRoom.turn < 10) {
+  if (currentRoom.clicks.length === 2) {
+    console.log("nästa runda");
     gamePlay();
+  } else {
+    console.log("väntar på motståndare");
   }
 });
 

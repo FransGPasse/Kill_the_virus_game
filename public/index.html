@@ -18,12 +18,12 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="./css/styles.css" />
     <script
-      defer
       src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"
+      defer
     ></script>
-    <script defer src="./javascript/script.js"></script>
+    <script src="./javascript/script.js" defer></script>
+    <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
     <header>
@@ -31,7 +31,7 @@
     </header>
 
     <!-- First page -->
-    <section class="first-screen">
+    <section class="screen first-screen">
       <form class="nes-container" id="submit-username">
         <div class="nes-field">
           <label id="username">Enter your username</label>
@@ -49,7 +49,7 @@
     </section>
 
     <!-- Second page -->
-    <section class="hidden second-screen">
+    <section class="hidden screen second-screen">
       <h1 id="welcome-user">Welcome___</h1>
       <p>Waiting for an opponent.</p>
       <p>1 / 2</p>
@@ -58,7 +58,7 @@
     </section>
 
     <!-- Game page -->
-    <section id="game" class="hidden">
+    <section class="hidden screen game-screen">
       <div id="board">
         <img src="./assets/Virus.png" alt="virus" id="virus" />
       </div>
@@ -67,16 +67,15 @@
         <div id="score">
           <h2 id="opponent"></h2>
           <h2>Scoreboard:</h2>
-          <h2>
-            <span class="your-points"></span> /
-            <span class="enemy-points"></span>
-          </h2>
+          <h2 class="your-points">/</h2>
+          <span>
+            <h2 class="enemy-points"></h2>
+          </span>
         </div>
 
         <div id="times">
-          <h3 id="your-score">You: 0.000</h3>
+          <h3 id="your-score"></h3>
           <h3 id="opponent-score"></h3>
-          <!-- <h3 id="opponent-score"><span>Opponent: 0.000</span></h3> -->
         </div>
       </div>
     </section>

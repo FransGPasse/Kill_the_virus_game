@@ -5,20 +5,24 @@
   --clr-friendly: white;
   --clr-opponent: #be1d30;
 
+  --clr-background: #253e11;
+  --clr-background-dark: #131d0b;
+
   --font-big: clamp(0.5rem, 1rem, 1.5rem);
   --font-small: clamp(0.5rem, 0.7rem, 1rem);
 }
 
 body {
-  height: 100vh;
-  width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #253e11;
+
+  background-color: var(--clr-background);
+
   font-family: "Press Start 2P";
   font-size: var(--font-big);
+
   cursor: url("../assets/handsprit-stor.png"), auto;
   padding: 0em 2em;
 }
@@ -28,33 +32,42 @@ header {
   justify-content: center;
   align-items: center;
   color: var(--clr-opponent);
-  height: 5rem;
-  width: 100%;
+  height: 10vh;
+  /*   width: 100vw; */
 }
 
-/*
-** Styling for first screen starts here
-*/
+.screen {
+  height: 90vh;
+  width: 100vw;
 
-.first-screen {
-  height: 100%;
-  width: 100%;
-  position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: var(--clr-friendly);
-  text-align: center;
 }
 
-form {
+/*
+  ** Styling for first screen starts here
+  */
+
+.second-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+  width: 100%;
+}
+
+#submit-username {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 75%;
-  height: 75%;
+  /*   width: 75%;
+  height: 75%; */
 }
 
 .nes-btn {
@@ -62,24 +75,12 @@ form {
 }
 
 /*
-*** Styling for first screen ends here
-*/
+  *** Styling for first screen ends here
+  */
 
 /*
-*** Styling for second screen starts here
-*/
-
-.second-screen {
-  background-color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  gap: 5%;
-}
+  *** Styling for second screen starts here
+  */
 
 #loader {
   animation: spin 1s linear infinite;
@@ -212,22 +213,18 @@ form {
 }
 
 /*
-*** Styling for second screen ends here
-*/
-
-#board,
-#scoreboard {
-  background-color: #141c10;
-}
+  *** Styling for second screen ends here
+  */
 
 #board {
-  min-height: 90%;
-  min-width: 80%;
+  height: 90vh;
+  width: 80%;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
   align-items: center;
   gap: 5px;
+  background-color: var(--clr-background-dark);
 }
 
 #virus {
@@ -254,21 +251,21 @@ form {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+
   color: var(--clr-friendly);
+  background-color: var(--clr-background);
   font-size: var(--font-small);
   text-align: center;
-  min-width: 20%;
-  min-height: 90%;
-  margin-left: 1%;
-  flex-direction: column;
-  gap: 5%;
+  width: 20%;
+  height: 90vh;
 }
 
 #scoreboard span {
   color: var(--clr-opponent);
 }
 
-#game {
+.game-screen {
   display: flex;
   flex-direction: row;
   min-height: 80%;
@@ -290,29 +287,49 @@ form {
 }
 
 /* Small tablet size */
-@media screen and (min-width: 620px) {
+/* @media screen and (min-width: 620px) {
   body {
     background-color: white;
   }
-}
+} */
 
 /* Large tablet and laptop size */
-@media screen and (min-width: 960px) {
+/* @media screen and (min-width: 960px) {
   body {
     background-color: white;
   }
-}
+} */
 
 /* Desktop size */
-@media screen and (min-width: 1200px) {
+/* @media screen and (min-width: 1200px) {
   body {
     background-color: white;
   }
-}
+} */
 
 /* Helper class */
 .hidden {
-  visibility: hidden;
+  display: none;
+}
+
+.game-over-div {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  flex-direction: column;
+  background-color: white;
+}
+
+.game-over-div button {
+  height: 3rem;
+  width: 12rem;
 }
 
 .game-over-div {
