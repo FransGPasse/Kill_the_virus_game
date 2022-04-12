@@ -51,19 +51,32 @@ const handleGame = async function (reactionTime, gameRoomId, callback) {
     currentRoom.turns = currentRoom.turns + 1;
 
     const roundWinnerId = currentRoom.clicks[0].id;
-    const opponentId = Object.values(currentRoom.usernames).find(obj => obj.id !== this.id).id;
+    const opponentId = Object.values(currentRoom.usernames).find(
+      (obj) => obj.id !== this.id
+    ).id;
 
     // console.log(currentRoom)
-
 
     currentRoom.usernames[roundWinnerId].points += 1;
 
     // console.log(currentRoom.usernames[roundWinnerId].points);
 
-    io.to(gameRoomId).emit('player:win', this.id, roundWinnerId, opponentId, currentRoom);
+    // Avsluta spelet när tio rundor har gått
+    if (currentRoom.turns === 10) {
+      const theWinner = currentRoom.usernames[roundWinnerId];
+      console.log("nu ska spelet vara slut", theWinner);
+      io.to(gameRoomId).emit("game:over", theWinner);
+    }
 
-    currentRoom.clicks = []
+    io.to(gameRoomId).emit(
+      "player:win",
+      this.id,
+      roundWinnerId,
+      opponentId,
+      currentRoom
+    );
 
+    currentRoom.clicks = [];
   }
 
   // const opponent = players.find((player) => player.id !== this.id);
@@ -75,7 +88,6 @@ const handleGame = async function (reactionTime, gameRoomId, callback) {
   // callback({
   //   opponentTime,
   // });
-
 
   // console.log(currentRoom)
 

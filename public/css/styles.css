@@ -314,3 +314,23 @@ form {
 .hidden {
   visibility: hidden;
 }
+
+.game-over-div {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  flex-direction: column;
+  background-color: white;
+}
+
+.game-over-div button {
+  height: 3rem;
+  width: 12rem;
+}
