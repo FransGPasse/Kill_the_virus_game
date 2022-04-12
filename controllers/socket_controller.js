@@ -6,30 +6,41 @@ const debug = require("debug")("game:socket_controller");
 const _ = require("lodash");
 
 let io = null;
-// let rounds;
 
 const rooms = [];
 
 const lobby = [];
 
+/**
+ *  Functions
+ */
+
 const handleDisconnect = function () {
-  // find the room that this socket is a part of
-  // const gameRoom = rooms.find((room) => room.username.hasOwnProperty(this.id));
-  // console.log(rooms.usernames.hasOwnProperty);
-  // console.log(this.id);
-  // console.log("gameRoom:", gameRoom);
-  // console.log("gameRoom.id:", gameRoom.id)
-  // console.log("gameRoom.username", gameRoom.username)
-  // console.log("username[this.id]:", gameRoom.username[this.id])
-  // let everyone in the gameRoom know that this user has disconnected
-  // io.to(gameRoom.id).emit("user:disconnected", gameRoom.username[this.id]);
-  // remove user from list of users in that gameRoom
-  // delete gameRoom.username[this.id];
-  // io.to(gameRoom.id).emit("user:list", gameRoom.username);
+  // Hitta nuvarande rum
+  const gameRoom = rooms.find(gameRoom => gameRoom.usernames.hasOwnProperty(this.id))
+
+  if (gameRoom) {
+    // Nollställ rum efter spelaren lämnat
+    let { id, turns, points, usernames } = gameRoom;
+    const opponent = usernames[!this.id]
+    delete usernames[this.id];
+    turns = 0;
+    points = 0;
+    
+    // broadcast till rummer att spelaren lämnade
+    this.broadcast.to(id).emit('players:list', usernames);
+    io.to(id).emit('player:disconnected', usernames);
+
+
+  } else {
+    console.log("No gameroom was found.")
+  }
+
 };
 
-const handleGame = async function (reactionTime, gameRoomId, callback) {
-  // "greppa" rätt rum
+
+const handleGame = async function (reactionTime, gameRoomId) {
+  // Hitta rätt rum
   const currentRoom = rooms.find((room) => room.id === gameRoomId);
   const players = currentRoom.usernames;
   let player = players[this.id];
@@ -37,11 +48,9 @@ const handleGame = async function (reactionTime, gameRoomId, callback) {
   // tilldela tiden för spelaren att klicka
   players[this.id].time = reactionTime;
 
+  // uppdatera reactiontime i array och pusha in i clicks
   player = { ...player, time: reactionTime };
   currentRoom.clicks.push({ ...player, id: this.id });
-
-  // console.log(this.id);
-  // console.log(currentRoom);
 
   this.emit("player:point", this.id, currentRoom);
 
@@ -51,42 +60,33 @@ const handleGame = async function (reactionTime, gameRoomId, callback) {
     currentRoom.turns = currentRoom.turns + 1;
 
     const roundWinnerId = currentRoom.clicks[0].id;
-    const opponentId = Object.values(currentRoom.usernames).find(obj => obj.id !== this.id).id;
+    const opponentId = Object.values(currentRoom.usernames).find(
+      (obj) => obj.id !== this.id
+    ).id;
 
     // console.log(currentRoom)
-
 
     currentRoom.usernames[roundWinnerId].points += 1;
 
     // console.log(currentRoom.usernames[roundWinnerId].points);
 
-    io.to(gameRoomId).emit('player:win', this.id, roundWinnerId, opponentId, currentRoom);
+    // Avsluta spelet när tio rundor har gått
+    if (currentRoom.turns === 10) {
+      const theWinner = currentRoom.usernames[roundWinnerId];
+      console.log("nu ska spelet vara slut", theWinner);
+      io.to(gameRoomId).emit("game:over", theWinner);
+    }
 
-    currentRoom.clicks = []
+    io.to(gameRoomId).emit(
+      "player:win",
+      this.id,
+      roundWinnerId,
+      opponentId,
+      currentRoom
+    );
 
+    currentRoom.clicks = [];
   }
-
-  // const opponent = players.find((player) => player.id !== this.id);
-
-  // let clicks = currentRoom.click;
-  // // clicks = { ...clicks, [this.id]: reactionTime };
-  // clicks.push("x");
-
-  // callback({
-  //   opponentTime,
-  // });
-
-
-  // console.log(currentRoom)
-
-  // console.log(currentRoom);
-
-  // const currentRoom = rooms.find((room) => room.id === gameRoomId);
-  // const players = currentRoom.usernames;
-  // få ut this.id
-  // players[this.id].time = reactionTime;
-  // clicks = { ...clicks, [this.id]: reactionTime };
-  // console.log(clicks);
 };
 
 const handlePlayerJoin = async function (username, callback) {
@@ -138,74 +138,12 @@ const handlePlayerJoin = async function (username, callback) {
   // Skapa eller gå med i rum via joinGameRoom.
   this.join(joinGameRoom);
 
-  // console.log("log 1:", joinGameRoom);
-  // console.log("log 2:", room);
-  // console.log("log 3:", room.usernames);
-
   if (lobby.length >= 2) {
     io.to(joinGameRoom).emit("players:list", room.usernames);
     lobby.splice(0, 2);
   }
 
   callback(joinGameRoom);
-
-  /** GAMLA VERSIONEN
-  room.usernames.push(username);
-
-  // Kolla om det är två eller fler users i lobbyn
-  if (_.size(room.usernames) >= 2) {
-    console.log(_.size(room.usernames));
-
-    player1 = room.usernames[0];
-    player2 = room.usernames[1];
-
-    let gameRoom = "gameroom";
-    let num = 1;
-
-    do {
-      gameRoom += num;
-      num++;
-    } while (rooms.find((room) => room.id === gameRoom));
-
-    const newGameRoom = {
-      id: gameRoom,
-      usernames: {
-        player_1: player1,
-        player_2: player2,
-      },
-    };
-
-    rooms.push(newGameRoom);
-
-    // console.log(this)
-
-    const activeGameRoom = rooms.find((room) => room.id === gameRoom);
-
-    this.join(activeGameRoom);
-
-    // UNDERSÖK VARFÖR CALLBACK INTE FUNKAR
-    // callback({
-    //   success: true,
-    //   room: activeGameRoom,
-    // });
-
-    // console.log(activeGameRoom.usernames)
-    // console.log(rooms)
-
-    // console.log(activeGameRoom.usernames)
-    // this.broadcast.to(activeGameRoom.id).emit('players:list', activeGameRoom.usernames);
-    this.emit('players:list', activeGameRoom.usernames);
-
-
-    console.log(activeGameRoom.usernames)
-
-    room.usernames.splice(0, 2);
-  } else {
-    // Skicka till waiting-screen
-    console.log("Waiting for opponent");
-  }
-
-  */
 };
 
 module.exports = function (socket, _io) {

@@ -111,13 +111,12 @@ let opponentPoints = 0;
 let yourTime;
 let opponentTime;
 
-socket.on('player:point', (playerid, gameRoomId) => {
+socket.on("player:point", (playerid, gameRoomId) => {
   const turn = gameRoomId.turn;
-  const { name, time } = gameRoomId.usernames[playerid]
+  const { name, time } = gameRoomId.usernames[playerid];
 
   gameRoomId = turn;
-})
-
+});
 
 const pointHandler = (yourTime) => {
   // console.log(yourTime);
@@ -128,8 +127,6 @@ const pointHandler = (yourTime) => {
   //   ++opponentPoints;
   //   document.querySelector(".enemy-points").innerHTML = opponentPoints;
   // }
-
-
 };
 
 // Check if the cursor has been cliked, if so we run the function below
@@ -209,15 +206,16 @@ const gamePlay = () => {
   });
 };
 
-socket.on('player:win', (username, roundWinner, opponentId, currentRoom) => {
-  console.log('hit');
+socket.on("player:win", (username, roundWinner, opponentId, currentRoom) => {
+  console.log("hit");
   const players = currentRoom.usernames;
   const thisPlayer = players[username];
   // const playerWinner = players[roundWinner];
   const opponent = players[opponentId];
 
-  console.log('This player:'. thisPlayer);
-  console.log('Opponent:', opponent);
+  console.log("This player:".thisPlayer);
+  console.log("Opponent:", opponent);
+  console.log("Turns: ", currentRoom.turns);
 
   document.querySelector(".your-points").innerHTML = thisPlayer.points;
 
@@ -226,4 +224,43 @@ socket.on('player:win', (username, roundWinner, opponentId, currentRoom) => {
   if (currentRoom.turn < 10) {
     gamePlay();
   }
+});
+
+socket.on("game:over", (theWinner) => {
+  console.log("GAME OVER");
+  console.log(theWinner);
+  let gameOverDiv = document.createElement("div");
+  gameOverDiv.className = "game-over-div";
+  let gameOverWinnerName = document.createElement("p");
+  gameOverWinnerName.innerHTML = "The winner is: " + theWinner.name;
+  let gameOverWinnerPoints = document.createElement("p");
+  gameOverWinnerPoints.innerHTML = "Points: " + theWinner.points;
+  let gameOverButton = document.createElement("button");
+  gameOverButton.innerHTML = "New game";
+  gameOverDiv.appendChild(gameOverWinnerName);
+  gameOverDiv.appendChild(gameOverWinnerPoints);
+  gameOverDiv.appendChild(gameOverButton);
+  document.querySelector("body").appendChild(gameOverDiv);
+  gameOverButton.addEventListener("click", () => {
+    window.location.reload();
+  });
+});
+
+//  Gör mer dynamiskt istället för repetition 
+socket.on("player:disconnected", (usernames) => {
+  console.log(usernames);
+
+  let gameOverDiv = document.createElement("div");
+  gameOverDiv.className = "game-over-div";
+  let gameOverWinnerName = document.createElement("p");
+  gameOverWinnerName.innerHTML = "Your opponent left *sad face*";
+  let gameOverButton = document.createElement("button");
+  gameOverButton.innerHTML = "New game";
+  gameOverDiv.appendChild(gameOverWinnerName);
+  // gameOverDiv.appendChild(gameOverWinnerPoints);
+  gameOverDiv.appendChild(gameOverButton);
+  document.querySelector("body").appendChild(gameOverDiv);
+  gameOverButton.addEventListener("click", () => {
+    window.location.reload();
+  });
 });

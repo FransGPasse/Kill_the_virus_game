@@ -28,7 +28,7 @@ header {
   justify-content: center;
   align-items: center;
   color: var(--clr-opponent);
-  height: 20%;
+  height: 5rem;
   width: 100%;
 }
 
@@ -271,6 +271,8 @@ form {
 #game {
   display: flex;
   flex-direction: row;
+  min-height: 80%;
+  min-width: 80%;
 }
 
 #score {
@@ -311,4 +313,24 @@ form {
 /* Helper class */
 .hidden {
   visibility: hidden;
+}
+
+.game-over-div {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  flex-direction: column;
+  background-color: white;
+}
+
+.game-over-div button {
+  height: 3rem;
+  width: 12rem;
 }
