@@ -52,16 +52,18 @@ const handleGame = async function (reactionTime, gameRoomId) {
 
   this.emit("player:point", this.id, currentRoom);
 
-  let mappedUserId = Object.values(players).map((username) => username.id);
-
-  let opponentUserId = mappedUserId.filter((opponent) => opponent !== this.id);
-
-  const yourTime = players[this.id].time;
-  const opponentTime = players[opponentUserId].time;
-
-  io.to(gameRoomId).emit("player:time", yourTime, opponentTime);
-
   if (currentRoom.clicks.length === 2) {
+    let mappedUserId = Object.values(players).map((username) => username.id);
+
+    let opponentUserId = mappedUserId.filter(
+      (opponent) => opponent !== this.id
+    );
+
+    const yourTime = players[this.id].time;
+    const opponentTime = players[opponentUserId].time;
+
+    io.to(gameRoomId).emit("player:time", yourTime, opponentTime);
+
     currentRoom.turns = currentRoom.turns + 1;
 
     const roundWinnerId = currentRoom.clicks[0].id;

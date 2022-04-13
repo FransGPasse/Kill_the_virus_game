@@ -193,9 +193,8 @@ const virusClick = virus.addEventListener("click", () => {
 
   // Get the time in milliseconds
   reactionTime = (clickedTime - createdTime) / 1000;
-  let yourTime = (clickedTime - createdTime) / 1000;
+  /*   let yourTime = (clickedTime - createdTime) / 1000; */
 
-  document.querySelector("#your-time").innerHTML = reactionTime;
   virus.style.visibility = "hidden";
 
   // pointHandler(yourTime);
