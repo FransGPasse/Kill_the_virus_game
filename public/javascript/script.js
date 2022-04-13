@@ -57,17 +57,21 @@ submitUsername.addEventListener("submit", (e) => {
 });
 
 const updatePlayerList = (usernames) => {
+  //Mapping the usernames objects and returns the names
   let mappedUsernames = Object.values(usernames).map(
     (username) => username.name
   );
 
-  let filteredUsername = mappedUsernames.filter(
+  //Filters out the opponents username
+  let opponentUsername = mappedUsernames.filter(
     (opponent) => opponent !== username
   );
 
+  //Sets the players name as the first name which is in white
   document.querySelector("#your-name").innerHTML = username;
 
-  document.querySelector("#opponent-name").innerHTML = filteredUsername;
+  //Sets the opponents name as the second name which is in red
+  document.querySelector("#opponent-name").innerHTML = opponentUsername;
 
   if (Object.keys(usernames).length == 2) {
     secondScreen.classList.add("hidden");
@@ -191,7 +195,7 @@ const virusClick = virus.addEventListener("click", () => {
   reactionTime = (clickedTime - createdTime) / 1000;
   let yourTime = (clickedTime - createdTime) / 1000;
 
-  document.querySelector("#your-score").innerHTML = reactionTime;
+  document.querySelector("#your-time").innerHTML = reactionTime;
   virus.style.visibility = "hidden";
 
   // pointHandler(yourTime);
@@ -205,14 +209,16 @@ const virusClick = virus.addEventListener("click", () => {
   // });
 });
 
-socket.on("player:win", (username, roundWinner, opponentId, currentRoom) => {
-  console.log("hit");
+socket.on("player:win", (playerID, roundWinner, opponentId, currentRoom) => {
   const players = currentRoom.usernames;
-  const thisPlayer = players[username];
+  const thisPlayer = players[playerID];
   const opponent = players[opponentId];
 
+  console.log("HERE ARE THE MFING PLAYERS: ", players);
+  console.log("HERE IS THE MFING ID OF THE PLAYER: ", playerID);
+
   console.log("This player: ", thisPlayer);
-  console.log("Opponent: ", opponent);
+  console.log("Opponent: ", opponentId);
   console.log("Round winner: ", roundWinner);
 
   document.querySelector(".your-points").innerHTML = thisPlayer.points;

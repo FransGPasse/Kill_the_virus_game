@@ -17,27 +17,25 @@ const lobby = [];
 
 const handleDisconnect = function () {
   // Hitta nuvarande rum
-  const gameRoom = rooms.find(gameRoom => gameRoom.usernames.hasOwnProperty(this.id))
+  const gameRoom = rooms.find((gameRoom) =>
+    gameRoom.usernames.hasOwnProperty(this.id)
+  );
 
   if (gameRoom) {
     // Nollställ rum efter spelaren lämnat
     let { id, turns, points, usernames } = gameRoom;
-    const opponent = usernames[!this.id]
+    const opponent = usernames[!this.id];
     delete usernames[this.id];
     turns = 0;
     points = 0;
-    
+
     // broadcast till rummer att spelaren lämnade
-    this.broadcast.to(id).emit('players:list', usernames);
-    io.to(id).emit('player:disconnected', usernames);
-
-
+    this.broadcast.to(id).emit("players:list", usernames);
+    io.to(id).emit("player:disconnected", usernames);
   } else {
-    console.log("No gameroom was found.")
+    console.log("No gameroom was found.");
   }
-
 };
-
 
 const handleGame = async function (reactionTime, gameRoomId) {
   // Hitta rätt rum
@@ -51,6 +49,8 @@ const handleGame = async function (reactionTime, gameRoomId) {
   // uppdatera reactiontime i array och pusha in i clicks
   player = { ...player, time: reactionTime };
   currentRoom.clicks.push({ ...player, id: this.id });
+
+  console.log(players);
 
   this.emit("player:point", this.id, currentRoom);
 
