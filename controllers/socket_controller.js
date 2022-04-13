@@ -50,11 +50,16 @@ const handleGame = async function (reactionTime, gameRoomId) {
   player = { ...player, time: reactionTime };
   currentRoom.clicks.push({ ...player, id: this.id });
 
-  console.log(players);
-
   this.emit("player:point", this.id, currentRoom);
 
-  io.to(gameRoomId).emit("player:time", reactionTime);
+  let mappedUserId = Object.values(players).map((username) => username.id);
+
+  let opponentUserId = mappedUserId.filter((opponent) => opponent !== this.id);
+
+  const yourTime = players[this.id].time;
+  const opponentTime = players[opponentUserId].time;
+
+  io.to(gameRoomId).emit("player:time", yourTime, opponentTime);
 
   if (currentRoom.clicks.length === 2) {
     currentRoom.turns = currentRoom.turns + 1;

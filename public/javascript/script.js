@@ -209,17 +209,22 @@ const virusClick = virus.addEventListener("click", () => {
   // });
 });
 
+socket.on("player:time", (yourTime, opponentTime) => {
+  document.querySelector("#your-time").innerHTML = yourTime;
+  document.querySelector("#opponent-time").innerHTML = opponentTime;
+});
+
 socket.on("player:win", (playerID, roundWinner, opponentId, currentRoom) => {
   const players = currentRoom.usernames;
   const thisPlayer = players[playerID];
   const opponent = players[opponentId];
 
-  console.log("HERE ARE THE MFING PLAYERS: ", players);
+  /* console.log("HERE ARE THE MFING PLAYERS: ", players);
   console.log("HERE IS THE MFING ID OF THE PLAYER: ", playerID);
 
   console.log("This player: ", thisPlayer);
   console.log("Opponent: ", opponentId);
-  console.log("Round winner: ", roundWinner);
+  console.log("Round winner: ", roundWinner); */
 
   document.querySelector(".your-points").innerHTML = thisPlayer.points;
 
