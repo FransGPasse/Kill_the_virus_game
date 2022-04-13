@@ -223,7 +223,7 @@ socket.on("player:win", (playerID, roundWinner, opponentId, currentRoom) => {
 
   document.querySelector(".your-points").innerHTML = thisPlayer.points;
 
-  document.querySelector(".enemy-points").innerHTML = opponent.points;
+  document.querySelector(".opponent-points").innerHTML = opponent.points;
 
   if (currentRoom.clicks.length === 2) {
     console.log("nästa runda");

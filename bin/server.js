@@ -11,13 +11,12 @@ const { debug } = require("console");
 /*
  *   Port
  */
-const port = normalizePort("3000");
-app.set("port", process.env.PORT || 3000);
+const port = normalizePort(process.env.PORT || 3000);
+app.set("port", port);
 
 /*
  *   Create HTTP server
  */
-app.set("port", port);
 
 const server = http.createServer(app);
 const io = new socketio.Server(server);
