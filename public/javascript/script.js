@@ -57,14 +57,17 @@ submitUsername.addEventListener("submit", (e) => {
 });
 
 const updatePlayerList = (usernames) => {
-  // console.log(usernames);
+  let mappedUsernames = Object.values(usernames).map(
+    (username) => username.name
+  );
 
-  document.querySelector("#opponent-score").innerHTML = Object.values(usernames)
-    .map(
-      (username) => `<li>
-       ${username.name}</li>`
-    )
-    .join("");
+  let filteredUsername = mappedUsernames.filter(
+    (opponent) => opponent !== username
+  );
+
+  document.querySelector("#your-name").innerHTML = username;
+
+  document.querySelector("#opponent-name").innerHTML = filteredUsername;
 
   if (Object.keys(usernames).length == 2) {
     secondScreen.classList.add("hidden");
@@ -244,7 +247,7 @@ socket.on("game:over", (theWinner) => {
   });
 });
 
-//  Gör mer dynamiskt istället för repetition 
+//  Gör mer dynamiskt istället för repetition
 socket.on("player:disconnected", (usernames) => {
   console.log(usernames);
 
