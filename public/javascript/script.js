@@ -161,7 +161,6 @@ const virusClick = virus.addEventListener("click", () => {
 
   virus.style.visibility = "hidden";
 
-
   socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
     updatePoints(data);
   });
@@ -200,15 +199,26 @@ socket.on("player:win", (playerID, roundWinner, opponentId, currentRoom) => {
   }
 });
 
-socket.on("game:over", (theWinner) => {
+socket.on("game:over", (player1, player2) => {
   console.log("GAME OVER");
-  console.log(theWinner);
+  console.log(player1);
+  console.log(player2);
+  let theWinner;
+  let theWinnerPoints;
+  if (parseInt(player1["points"]) > parseInt(player2["points"])) {
+    theWinner = player1["name"];
+    theWinnerPoints = player1["points"];
+  } else {
+    theWinner = player2["name"];
+    theWinnerPoints = player2["points"];
+  }
+
   let gameOverDiv = document.createElement("div");
   gameOverDiv.className = "game-over-div";
   let gameOverWinnerName = document.createElement("p");
-  gameOverWinnerName.innerHTML = "The winner is: " + theWinner.name;
+  gameOverWinnerName.innerHTML = "The winner is: " + theWinner;
   let gameOverWinnerPoints = document.createElement("p");
-  gameOverWinnerPoints.innerHTML = "Points: " + theWinner.points;
+  gameOverWinnerPoints.innerHTML = "Points: " + theWinnerPoints;
   let gameOverButton = document.createElement("button");
   gameOverButton.innerHTML = "New game";
   gameOverDiv.appendChild(gameOverWinnerName);

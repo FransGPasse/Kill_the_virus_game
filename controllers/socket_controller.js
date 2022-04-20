@@ -77,11 +77,18 @@ const handleGame = async function (reactionTime, gameRoomId) {
 
     // console.log(currentRoom.usernames[roundWinnerId].points);
 
+    // console.log(players[this.id].points);
+    // console.log(currentRoom.usernames[opponentId].points);
+    const player1 = players[this.id];
+    const player2 = currentRoom.usernames[opponentId];
+
+    console.log(currentRoom["turns"]);
+
     // Avsluta spelet när tio rundor har gått
-    if (currentRoom.turns === 10) {
-      const theWinner = currentRoom.usernames[roundWinnerId];
-      console.log("nu ska spelet vara slut", theWinner);
-      io.to(gameRoomId).emit("game:over", theWinner);
+    if (currentRoom["turns"] === 10) {
+      const player1 = players[this.id];
+      const player2 = currentRoom.usernames[opponentId];
+      io.to(gameRoomId).emit("game:over", player1, player2);
     }
 
     io.to(gameRoomId).emit(
