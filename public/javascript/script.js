@@ -84,34 +84,9 @@ const updatePlayerList = (usernames) => {
 socket.on("players:list", (usernames) => {
   console.log("Vidare");
 
-  // console.log(usernames);
   updatePlayerList(usernames);
   // Den här visar att usernames skickar med hela arrayen, alltså båda spelarnas username och socket id. Men bara när den andra spelaren ansulet.
 });
-
-/*
-  - Kolla updateUserList på johans kod och jämför => genom den funktionen, trigga spelmekaninen
-*/
-
-// COUNTDOWN FUNCTION
-// function endCountdown() {
-//   console.log("starting the game now");
-// }
-
-// function handleTimer() {
-//   if (count === -1) {
-//     clearInterval(timer);
-//     endCountdown();
-//   } else {
-//     document.querySelector(".countdown").innerHTML = count;
-//     count--;
-//   }
-// }
-
-// var timer = setInterval(function () {
-//   handleTimer(count);
-// }, 1000);
-// COUNTDOWN FUNCTION
 
 let yourPoints = 0;
 let opponentPoints = 0;
@@ -124,17 +99,6 @@ socket.on("player:point", (playerid, gameRoomId) => {
 
   gameRoomId = turn;
 });
-
-const pointHandler = (yourTime) => {
-  // console.log(yourTime);
-  // if (yourTime > 0.5) {
-  //   ++yourPoints;
-  //   document.querySelector(".your-points").innerHTML = yourPoints;
-  // } else {
-  //   ++opponentPoints;
-  //   document.querySelector(".enemy-points").innerHTML = opponentPoints;
-  // }
-};
 
 // Check if the cursor has been cliked, if so we run the function below
 document.onclick = () => applyCursorRippleEffect(event);
@@ -197,30 +161,22 @@ const virusClick = virus.addEventListener("click", () => {
 
   virus.style.visibility = "hidden";
 
-  // pointHandler(yourTime);
-  // generateNewPosition();
 
   socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
     updatePoints(data);
   });
-  // socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
-  //   updatePoints(data);
-  // });
 });
-
-// socket.on("player:time", (yourTime, opponentTime) => {
-//   document.querySelector("#your-time").innerHTML = yourTime;
-//   document.querySelector("#opponent-time").innerHTML = opponentTime;
-// });
 
 socket.on("player:win", (playerID, roundWinner, opponentId, currentRoom) => {
   const players = currentRoom.usernames;
   const thisPlayer = players[playerID];
   const opponent = players[opponentId];
+
+  /*
   console.log(thisPlayer["points"]);
   console.log(opponent["points"]);
 
-  /* console.log("HERE ARE THE MFING PLAYERS: ", players);
+  console.log("HERE ARE THE MFING PLAYERS: ", players);
   console.log("HERE IS THE MFING ID OF THE PLAYER: ", playerID);
 
   console.log("This player: ", thisPlayer);
