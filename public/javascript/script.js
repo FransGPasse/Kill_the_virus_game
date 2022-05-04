@@ -18,6 +18,49 @@ socket.on("user:connected", (username) => {
  *
  */
 
+let timeBegan = null,
+  timeStopped = null,
+  stoppedDuration = 0,
+  started = null;
+
+function start() {
+  if (timeBegan === null) {
+    timeBegan = new Date();
+  }
+
+  if (timeStopped !== null) {
+    stoppedDuration += new Date() - timeStopped;
+  }
+  console.log(stoppedDuration);
+
+  started = setInterval(clockRunning, 10);
+}
+
+function stop() {
+  timeStopped = new Date();
+  clearInterval(started);
+}
+
+function reset() {
+  clearInterval(started);
+  stoppedDuration = 0;
+  timeBegan = null;
+  timeStopped = null;
+  document.querySelector("#timer").innerHTML = "00.000";
+}
+
+function clockRunning() {
+  let currentTime = new Date(),
+    timeElapsed = new Date(currentTime - timeBegan - stoppedDuration),
+    sec = timeElapsed.getUTCSeconds(),
+    ms = timeElapsed.getUTCMilliseconds();
+
+  document.querySelector("#timer").innerHTML =
+    (sec > 9 ? sec : "0" + sec) +
+    "." +
+    (ms > 99 ? ms : ms > 9 ? "0" + ms : "00" + ms);
+}
+
 let virus = document.querySelector("#virus");
 let gameRoomId;
 
@@ -139,6 +182,8 @@ const generateNewPosition = () => {
   Object.assign(virus.style, randomGrid);
 
   // Start the clock
+  reset();
+  start();
   createdTime = Date.now();
 };
 
@@ -154,6 +199,7 @@ const gamePlay = () => {
 const virusClick = virus.addEventListener("click", () => {
   // Get the clock after click
   clickedTime = Date.now();
+  stop();
 
   // Get the time in milliseconds
   reactionTime = (clickedTime - createdTime) / 1000;
@@ -188,6 +234,7 @@ socket.on("player:win", (playerID, roundWinner, opponentId, currentRoom) => {
   document.querySelector(".your-points").innerHTML = thisPlayer["points"];
   document.querySelector(".opponent-points").innerHTML = opponent["points"];
 
+  document.querySelector("#timer").innerHTML = clockRunning();
   document.querySelector("#your-time").innerHTML = thisPlayer["time"];
   document.querySelector("#opponent-time").innerHTML = opponent["time"];
 
