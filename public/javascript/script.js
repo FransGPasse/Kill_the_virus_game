@@ -31,7 +31,6 @@ function start() {
   if (timeStopped !== null) {
     stoppedDuration += new Date() - timeStopped;
   }
-  console.log(stoppedDuration);
 
   started = setInterval(clockRunning, 10);
 }
@@ -175,9 +174,13 @@ function applyCursorRippleEffect(e) {
 }
 
 // Function to generate new position for the virus
-socket.on("virus:position", (randomGrid) => {
+socket.on("virus:position", (randomGrid, currentRoom) => {
   // Assign the object to the virus so it moves around on every click
-  Object.assign(virus.style, randomGrid);
+  Object.assign(virus.style, currentRoom);
+
+  console.log(currentRoom);
+  // console.log(currentRoom.position);
+
   // Start the clock
   reset();
   start();
@@ -185,14 +188,6 @@ socket.on("virus:position", (randomGrid) => {
   // Show virus
   virus.style.visibility = "visible";
 });
-
-/* const gamePlay = () => {
-  let delay = Math.floor(Math.random() * 5);
-  setTimeout(() => {
-    setNewPosition();
-  }, parseInt(delay * 1000));
-  generateNewPosition();
-}; */
 
 const virusClick = virus.addEventListener("click", () => {
   virus.style.visibility = "hidden";
@@ -209,7 +204,7 @@ const virusClick = virus.addEventListener("click", () => {
   });
 });
 
-socket.on("player:win", (playerID, roundWinner, opponentId, currentRoom) => {
+socket.on("round:win", (playerID, roundWinner, opponentId, currentRoom) => {
   const players = currentRoom.usernames;
   const thisPlayer = players[playerID];
   const opponent = players[opponentId];
@@ -225,7 +220,9 @@ socket.on("player:win", (playerID, roundWinner, opponentId, currentRoom) => {
   document.querySelector("#opponent-time").innerHTML = opponent["time"];
 
   if (currentRoom.clicks.length === 2) {
-    console.log("nästa runda");
+    if (document.querySelector("#timer").innerHTML === "undefined") {
+      document.querySelector("#timer").innerHTML = "Waiting…";
+    }
     socket.emit("game:new");
   } else {
     console.log("väntar på motståndare");

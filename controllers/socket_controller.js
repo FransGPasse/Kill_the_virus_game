@@ -43,6 +43,8 @@ const handleGame = async function (reactionTime, gameRoomId) {
   const players = currentRoom.usernames;
   let player = players[this.id];
 
+  console.log("Här är player som är this id av players", player);
+
   // tilldela tiden för spelaren att klicka
   players[this.id].time = reactionTime;
 
@@ -52,7 +54,7 @@ const handleGame = async function (reactionTime, gameRoomId) {
 
   this.emit("player:point", this.id, currentRoom);
 
-  console.log(rooms);
+  console.log("Här är currentRoom.clicks ", currentRoom.clicks);
 
   if (currentRoom.clicks.length === 2) {
     let mappedUserId = Object.values(players).map((username) => username.id);
@@ -81,7 +83,7 @@ const handleGame = async function (reactionTime, gameRoomId) {
     console.log(currentRoom["turns"]);
 
     // Avsluta spelet när tio rundor har gått
-    if (currentRoom["turns"] === 4) {
+    if (currentRoom["turns"] === 5) {
       const player1 = players[this.id];
       const player2 = currentRoom.usernames[opponentId];
       io.to(gameRoomId).emit("game:over", player1, player2);
@@ -89,7 +91,7 @@ const handleGame = async function (reactionTime, gameRoomId) {
     }
 
     io.to(gameRoomId).emit(
-      "player:win",
+      "round:win",
       this.id,
       roundWinnerId,
       opponentId,
@@ -135,11 +137,19 @@ const handlePlayerJoin = async function (username, callback) {
 
     joinGameRoom = gameRoom;
 
-    rooms.push({ id: gameRoom, turns: 0, clicks: [], usernames: {} });
+    rooms.push({
+      id: gameRoom,
+      turns: 0,
+      clicks: [],
+      position: {},
+      usernames: {},
+    });
   }
 
   // Find the gamesession and add the player to it
   const room = rooms.find((obj) => obj.id === joinGameRoom);
+
+  console.log("Här är room", room);
 
   room.usernames = {
     ...room.usernames,
@@ -171,7 +181,13 @@ const generateNewPosition = () => {
     gridRowEnd: ++randomGridNumberY,
   };
 
-  io.emit("virus:position", randomGrid);
+  rooms.position = randomGrid;
+
+  console.log("Här är randomGrid", randomGrid);
+
+  console.log("Här är rooms ", rooms);
+
+  io.emit("virus:position", randomGrid, rooms.position);
 };
 
 const gamePlay = () => {
