@@ -52,13 +52,24 @@ function reset() {
 function clockRunning() {
   let currentTime = new Date(),
     timeElapsed = new Date(currentTime - timeBegan - stoppedDuration),
+    mins = timeElapsed.getUTCMinutes(),
     sec = timeElapsed.getUTCSeconds(),
     ms = timeElapsed.getUTCMilliseconds();
 
+  if (undefined) {
+    return "Loading";
+  }
+
   document.querySelector("#timer").innerHTML =
+    (mins > 0 ? mins : "0") +
+    "." +
     (sec > 9 ? sec : "0" + sec) +
     "." +
     (ms > 99 ? ms : ms > 9 ? "0" + ms : "00" + ms);
+}
+
+if (document.querySelector("#timer").innerHTML === undefined) {
+  document.querySelector("#timer").innerHTML = "LOADING :)";
 }
 
 let virus = document.querySelector("#virus");
@@ -164,39 +175,27 @@ function applyCursorRippleEffect(e) {
 }
 
 // Function to generate new position for the virus
-const generateNewPosition = () => {
-  // Random numbers for grid
-  let randomGridNumberX = Math.floor(Math.random() * 11);
-  let randomGridNumberY = Math.floor(Math.random() * 11);
-
-  // Adding the styling in a object so the virus can move around randon
-  let randomGrid = {
-    gridColumnStart: randomGridNumberX,
-    gridColumnEnd: ++randomGridNumberX,
-    gridRowStart: randomGridNumberY,
-    gridRowEnd: ++randomGridNumberY,
-  };
-  // console.log(randomGrid);
-
+socket.on("virus:position", (randomGrid) => {
   // Assign the object to the virus so it moves around on every click
   Object.assign(virus.style, randomGrid);
-
   // Start the clock
   reset();
   start();
   createdTime = Date.now();
-};
+  // Show virus
+  virus.style.visibility = "visible";
+});
 
-const gamePlay = () => {
+/* const gamePlay = () => {
   let delay = Math.floor(Math.random() * 5);
   setTimeout(() => {
-    generateNewPosition();
-    virus.style.visibility = "visible";
+    setNewPosition();
   }, parseInt(delay * 1000));
   generateNewPosition();
-};
+}; */
 
 const virusClick = virus.addEventListener("click", () => {
+  virus.style.visibility = "hidden";
   // Get the clock after click
   clickedTime = Date.now();
   stop();
@@ -204,8 +203,6 @@ const virusClick = virus.addEventListener("click", () => {
   // Get the time in milliseconds
   reactionTime = (clickedTime - createdTime) / 1000;
   /*   let yourTime = (clickedTime - createdTime) / 1000; */
-
-  virus.style.visibility = "hidden";
 
   socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
     updatePoints(data);
@@ -216,17 +213,6 @@ socket.on("player:win", (playerID, roundWinner, opponentId, currentRoom) => {
   const players = currentRoom.usernames;
   const thisPlayer = players[playerID];
   const opponent = players[opponentId];
-
-  /*
-  console.log(thisPlayer["points"]);
-  console.log(opponent["points"]);
-
-  console.log("HERE ARE THE MFING PLAYERS: ", players);
-  console.log("HERE IS THE MFING ID OF THE PLAYER: ", playerID);
-
-  console.log("This player: ", thisPlayer);
-  console.log("Opponent: ", opponentId);
-  console.log("Round winner: ", roundWinner); */
 
   document.querySelector("#your-name").innerHTML = thisPlayer["name"];
   document.querySelector("#opponent-name").innerHTML = opponent["name"];
@@ -240,7 +226,7 @@ socket.on("player:win", (playerID, roundWinner, opponentId, currentRoom) => {
 
   if (currentRoom.clicks.length === 2) {
     console.log("nästa runda");
-    gamePlay();
+    socket.emit("game:new");
   } else {
     console.log("väntar på motståndare");
   }

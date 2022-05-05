@@ -351,3 +351,7 @@ header {
   height: 3rem;
   width: 12rem;
 }
+
+#timer {
+  color: #bff097;
+}
