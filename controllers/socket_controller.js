@@ -54,7 +54,7 @@ const handleGame = async function (reactionTime, gameRoomId) {
 
   this.emit("player:point", this.id, currentRoom);
 
-  console.log("Här är currentRoom.clicks ", currentRoom.clicks);
+  // console.log("Här är currentRoom.clicks ", currentRoom.clicks);
 
   if (currentRoom.clicks.length === 2) {
     let mappedUserId = Object.values(players).map((username) => username.id);
@@ -80,7 +80,7 @@ const handleGame = async function (reactionTime, gameRoomId) {
     const player1 = players[this.id];
     const player2 = currentRoom.usernames[opponentId];
 
-    console.log(currentRoom["turns"]);
+    // console.log(currentRoom["turns"]);
 
     // Avsluta spelet när tio rundor har gått
     if (currentRoom["turns"] === 5) {
@@ -149,7 +149,7 @@ const handlePlayerJoin = async function (username, callback) {
   // Find the gamesession and add the player to it
   const room = rooms.find((obj) => obj.id === joinGameRoom);
 
-  console.log("Här är room", room);
+  // console.log("Här är room", room);
 
   room.usernames = {
     ...room.usernames,
@@ -162,7 +162,12 @@ const handlePlayerJoin = async function (username, callback) {
   if (lobby.length >= 2) {
     io.to(joinGameRoom).emit("players:list", room.usernames);
     lobby.splice(0, 2);
-    generateNewPosition();
+    const newPosition = generateNewPosition();
+
+    room.position = newPosition;
+
+    io.to(room.id).emit("virus:position", rooms.position);
+
   }
 
   callback(joinGameRoom);
@@ -181,19 +186,27 @@ const generateNewPosition = () => {
     gridRowEnd: ++randomGridNumberY,
   };
 
-  rooms.position = randomGrid;
+  // rooms.position = randomGrid;
 
-  console.log("Här är randomGrid", randomGrid);
+  // io.emit("virus:position", randomGrid, rooms.position);
 
-  console.log("Här är rooms ", rooms);
-
-  io.emit("virus:position", randomGrid, rooms.position);
+  return randomGrid;
 };
 
-const gamePlay = () => {
+const gamePlay = (currentRoom, gameRoomId) => {
+  // console.log("HÄR ÄR CURRENTROOM:", currentRoom)
+  console.log("HÄR ÄR GAMEROOMID:", gameRoomId)
+
   let delay = Math.floor(Math.random() * 5);
   setTimeout(() => {
-    generateNewPosition();
+    const room = rooms.find((obj) => obj.id === gameRoomId);
+
+    const newPosition = generateNewPosition();
+
+    room.position = newPosition;
+
+    console.log("HÄR ÄR ROOM:", room)
+    io.to(room.id).emit("virus:position", room.position);
   }, parseInt(delay * 1000));
 };
 
@@ -206,6 +219,7 @@ module.exports = function (socket, _io) {
 
   socket.on("user:virusclick", handleGame);
 
+  // socket.on("game:new", handleGame);
   socket.on("game:new", gamePlay);
 
   socket.on("disconnect", handleDisconnect);
