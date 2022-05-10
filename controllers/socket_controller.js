@@ -162,7 +162,10 @@ const handlePlayerJoin = async function (username, callback) {
   if (lobby.length >= 2) {
     io.to(joinGameRoom).emit("players:list", room.usernames);
     lobby.splice(0, 2);
-    generateNewPosition();
+
+    //! Här är typ det som Johan hjälpte oss med! Osäkert om det ska vara här eller i handleGame kanske men något sånt här hade varit optimalt
+    const newPosition = generateNewPosition();
+    io.to(joinGameRoom).emit("virus:position", newPosition);
   }
 
   callback(joinGameRoom);
@@ -181,13 +184,13 @@ const generateNewPosition = () => {
     gridRowEnd: ++randomGridNumberY,
   };
 
-  rooms.position = randomGrid;
+  return randomGrid;
 
-  console.log("Här är randomGrid", randomGrid);
+  /*   rooms.position = randomGrid;
 
   console.log("Här är rooms ", rooms);
 
-  io.emit("virus:position", randomGrid, rooms.position);
+  io.emit("virus:position", randomGrid, rooms.position); */
 };
 
 const gamePlay = () => {
