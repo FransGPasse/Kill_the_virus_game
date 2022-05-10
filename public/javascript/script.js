@@ -129,7 +129,7 @@ const updatePlayerList = (usernames) => {
   if (Object.keys(usernames).length == 2) {
     secondScreen.classList.add("hidden");
     gameScreen.classList.remove("hidden");
-    gamePlay();
+    // gamePlay();
   }
 };
 
@@ -174,11 +174,11 @@ function applyCursorRippleEffect(e) {
 }
 
 // Function to generate new position for the virus
-socket.on("virus:position", (randomGrid, currentRoom) => {
+socket.on("virus:position", currentRoomPosition => {
   // Assign the object to the virus so it moves around on every click
-  Object.assign(virus.style, currentRoom);
+  Object.assign(virus.style, currentRoomPosition);
 
-  console.log(currentRoom);
+  console.log(currentRoomPosition);
   // console.log(currentRoom.position);
 
   // Start the clock
@@ -223,7 +223,7 @@ socket.on("round:win", (playerID, roundWinner, opponentId, currentRoom) => {
     if (document.querySelector("#timer").innerHTML === "undefined") {
       document.querySelector("#timer").innerHTML = "Waiting…";
     }
-    socket.emit("game:new");
+    socket.emit("game:new", currentRoom, gameRoomId);
   } else {
     console.log("väntar på motståndare");
   }
