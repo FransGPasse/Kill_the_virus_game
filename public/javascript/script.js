@@ -1,5 +1,3 @@
-
-
 /*
  *   Server-to-front-end functions (( ARBETSTITEL ))
  *
@@ -172,9 +170,8 @@ function applyCursorRippleEffect(e) {
 }
 
 // Function to generate new position for the virus
-socket.on("virus:position", currentRoomPosition => {
-
-  console.log("NU KALLADES VIRUS:POSITION IGEN")
+socket.on("virus:position", (currentRoomPosition) => {
+  console.log("NU KALLADES VIRUS:POSITION IGEN");
   // Assign the object to the virus so it moves around on every click
   Object.assign(virus.style, currentRoomPosition);
 
@@ -199,8 +196,11 @@ const virusClick = virus.addEventListener("click", () => {
   reactionTime = (clickedTime - createdTime) / 1000;
   /*   let yourTime = (clickedTime - createdTime) / 1000; */
 
-  socket.emit("user:virusclick", reactionTime, gameRoomId, 
-  // (data) => {updatePoints(data)}
+  socket.emit(
+    "user:virusclick",
+    reactionTime,
+    gameRoomId
+    // (data) => {updatePoints(data)}
   );
 });
 
@@ -222,8 +222,6 @@ socket.on("round:win", (playerID, roundWinner, opponentId, currentRoom) => {
   if (document.querySelector("#timer").innerHTML === "undefined") {
     document.querySelector("#timer").innerHTML = "Waiting…";
   }
-
-
 });
 
 socket.on("game:over", (player1, player2) => {
@@ -235,6 +233,9 @@ socket.on("game:over", (player1, player2) => {
   if (parseInt(player1["points"]) > parseInt(player2["points"])) {
     theWinner = player1["name"];
     theWinnerPoints = player1["points"];
+  } else if (parseInt(player1["points"]) === parseInt(player2["points"])) {
+    theWinner = "it's a tie";
+    theWinnerPoints = "with even points :P";
   } else {
     theWinner = player2["name"];
     theWinnerPoints = player2["points"];
