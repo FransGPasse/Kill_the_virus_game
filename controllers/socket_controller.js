@@ -14,7 +14,7 @@ const lobby = [];
 /**
  *  Functions
  */
- const generateNewPosition = () => {
+const generateNewPosition = () => {
   // Random numbers for grid
   let randomGridNumberX = Math.floor(Math.random() * 11);
   let randomGridNumberY = Math.floor(Math.random() * 11);
@@ -72,7 +72,23 @@ const handleGame = async function (reactionTime, gameRoomId) {
 
 
 
-    // Avsluta spelet när tio rundor har gått
+  // Avsluta spelet när tio rundor har gått
+  if (currentRoom.clicks.length === 2) {
+
+    currentRoom.turns = currentRoom.turns + 1;
+
+    const roundWinnerId = currentRoom.clicks[0].id;
+    const opponentId = Object.values(currentRoom.usernames).find(
+      (obj) => obj.id !== this.id
+    ).id;
+
+    currentRoom.usernames[roundWinnerId].points += 1;
+
+    const player1 = players[this.id];
+    const player2 = currentRoom.usernames[opponentId];
+
+    // console.log(currentRoom["turns"]);
+
     if (currentRoom["turns"] >= 5) {
 
       const opponentId = Object.values(currentRoom.usernames).find(
@@ -101,29 +117,6 @@ const handleGame = async function (reactionTime, gameRoomId) {
       console.log(currentRoom)
 
     }
-
-
-
-
-
-
-  if (currentRoom.clicks.length === 2) {
-
-    currentRoom.turns = currentRoom.turns + 1;
-
-    const roundWinnerId = currentRoom.clicks[0].id;
-    const opponentId = Object.values(currentRoom.usernames).find(
-      (obj) => obj.id !== this.id
-    ).id;
-
-    currentRoom.usernames[roundWinnerId].points += 1;
-
-    const player1 = players[this.id];
-    const player2 = currentRoom.usernames[opponentId];
-
-    // console.log(currentRoom["turns"]);
-
-
 
     io.to(gameRoomId).emit(
       "round:win",
@@ -214,6 +207,7 @@ const handlePlayerJoin = async function (username, callback) {
 };
 
 const gamePlay = (currentRoom, gameRoomId) => {
+  generateNewPosition();
   // console.log("HÄR ÄR CURRENTROOM:", currentRoom)
   // console.log("HÄR ÄR GAMEROOMID:", gameRoomId)
 
