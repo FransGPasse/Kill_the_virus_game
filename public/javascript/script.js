@@ -1,4 +1,4 @@
-"use strict";
+// "use strict";
 
 /*
  *   Server-to-front-end functions (( ARBETSTITEL ))
@@ -175,6 +175,8 @@ function applyCursorRippleEffect(e) {
 
 // Function to generate new position for the virus
 socket.on("virus:position", currentRoomPosition => {
+
+  console.log("NU KALLADES VIRUS:POSITION IGEN")
   // Assign the object to the virus so it moves around on every click
   Object.assign(virus.style, currentRoomPosition);
 
@@ -199,9 +201,9 @@ const virusClick = virus.addEventListener("click", () => {
   reactionTime = (clickedTime - createdTime) / 1000;
   /*   let yourTime = (clickedTime - createdTime) / 1000; */
 
-  socket.emit("user:virusclick", reactionTime, gameRoomId, (data) => {
-    updatePoints(data);
-  });
+  socket.emit("user:virusclick", reactionTime, gameRoomId, 
+  // (data) => {updatePoints(data)}
+  );
 });
 
 socket.on("round:win", (playerID, roundWinner, opponentId, currentRoom) => {
@@ -219,14 +221,11 @@ socket.on("round:win", (playerID, roundWinner, opponentId, currentRoom) => {
   document.querySelector("#your-time").innerHTML = thisPlayer["time"];
   document.querySelector("#opponent-time").innerHTML = opponent["time"];
 
-  if (currentRoom.clicks.length === 2) {
-    if (document.querySelector("#timer").innerHTML === "undefined") {
-      document.querySelector("#timer").innerHTML = "Waiting…";
-    }
-    socket.emit("game:new", currentRoom, gameRoomId);
-  } else {
-    console.log("väntar på motståndare");
+  if (document.querySelector("#timer").innerHTML === "undefined") {
+    document.querySelector("#timer").innerHTML = "Waiting…";
   }
+
+
 });
 
 socket.on("game:over", (player1, player2) => {
