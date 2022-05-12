@@ -58,7 +58,7 @@ const handleGame = async function (reactionTime, gameRoomId) {
   const players = currentRoom.usernames;
   let player = players[this.id];
 
-  console.log("Här är player som är this id av players", player);
+  // console.log("Här är player som är this id av players", player);
 
   // tilldela tiden för spelaren att klicka
   players[this.id].time = reactionTime;
@@ -74,10 +74,32 @@ const handleGame = async function (reactionTime, gameRoomId) {
 
     // Avsluta spelet när tio rundor har gått
     if (currentRoom["turns"] >= 5) {
+
+      const opponentId = Object.values(currentRoom.usernames).find(
+        (obj) => obj.id !== this.id
+      ).id;
+
       const player1 = players[this.id];
       const player2 = currentRoom.usernames[opponentId];
+
       io.to(gameRoomId).emit("game:over", player1, player2);
-      turns = 0;
+
+      console.log(currentRoom)
+
+      //  Reset room
+      currentRoom.turns = 0;
+      currentRoom.position = {};
+      currentRoom.clicks = [];
+
+      player1.points = 0;
+      player1.time = 0;
+
+      player2.points = 0;
+      player2.time = 0;
+
+
+      console.log(currentRoom)
+
     }
 
 
@@ -193,7 +215,7 @@ const handlePlayerJoin = async function (username, callback) {
 
 const gamePlay = (currentRoom, gameRoomId) => {
   // console.log("HÄR ÄR CURRENTROOM:", currentRoom)
-  console.log("HÄR ÄR GAMEROOMID:", gameRoomId)
+  // console.log("HÄR ÄR GAMEROOMID:", gameRoomId)
 
   let delay = Math.floor(Math.random() * 5);
   setTimeout(() => {
@@ -203,7 +225,7 @@ const gamePlay = (currentRoom, gameRoomId) => {
 
     room.position = newPosition;
 
-    console.log("HÄR ÄR ROOM:", room)
+    // console.log("HÄR ÄR ROOM:", room)
     io.to(room.id).emit("virus:position", room.position);
   }, parseInt(delay * 1000));
 };
