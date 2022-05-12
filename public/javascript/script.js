@@ -9,9 +9,9 @@ const socket = io();
 
 let username = null;
 
-socket.on("user:connected", (username) => {
-  console.log("Lyssnar på user:connected");
-});
+// socket.on("user:connected", (username) => {
+//   console.log("Lyssnar på user:connected");
+// });
 
 /*
  *   Game functions
@@ -82,11 +82,9 @@ let gameScreen = document.querySelector(".game-screen");
 /* Hämtar knappen där man skriver in lösenord */
 let submitUsername = document.querySelector("#submit-username");
 
-let rounds = 10;
 let clickedTime;
 let createdTime;
 let reactionTime;
-let count = 3;
 
 const searchForGame = () => {
   firstScreen.classList.toggle("hidden");

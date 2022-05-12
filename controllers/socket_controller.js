@@ -2,7 +2,6 @@
  *   Socket Controller
  */
 
-const debug = require("debug")("game:socket_controller");
 const _ = require("lodash");
 
 let io = null;
@@ -14,7 +13,7 @@ const lobby = [];
 /**
  *  Functions
  */
- const generateNewPosition = () => {
+const generateNewPosition = () => {
   // Random numbers for grid
   let randomGridNumberX = Math.floor(Math.random() * 11);
   let randomGridNumberY = Math.floor(Math.random() * 11);
@@ -58,8 +57,6 @@ const handleGame = async function (reactionTime, gameRoomId) {
   const players = currentRoom.usernames;
   let player = players[this.id];
 
-  // console.log("Här är player som är this id av players", player);
-
   // tilldela tiden för spelaren att klicka
   players[this.id].time = reactionTime;
 
@@ -69,44 +66,7 @@ const handleGame = async function (reactionTime, gameRoomId) {
 
   this.emit("player:point", this.id, currentRoom);
 
-
-
-
-    // Avsluta spelet när tio rundor har gått
-    if (currentRoom["turns"] >= 5) {
-
-      const opponentId = Object.values(currentRoom.usernames).find(
-        (obj) => obj.id !== this.id
-      ).id;
-
-      const player1 = players[this.id];
-      const player2 = currentRoom.usernames[opponentId];
-
-      io.to(gameRoomId).emit("game:over", player1, player2);
-
-      console.log(currentRoom)
-
-      //  Reset room
-      currentRoom.turns = 0;
-      currentRoom.position = {};
-      currentRoom.clicks = [];
-
-      player1.points = 0;
-      player1.time = 0;
-
-      player2.points = 0;
-      player2.time = 0;
-
-
-      console.log(currentRoom)
-
-    }
-
-
-
-
-
-
+  // Kolla om två har klickat
   if (currentRoom.clicks.length === 2) {
 
     currentRoom.turns = currentRoom.turns + 1;
@@ -118,12 +78,29 @@ const handleGame = async function (reactionTime, gameRoomId) {
 
     currentRoom.usernames[roundWinnerId].points += 1;
 
-    const player1 = players[this.id];
-    const player2 = currentRoom.usernames[opponentId];
 
-    // console.log(currentRoom["turns"]);
+    if (currentRoom["turns"] >= 10) {
 
+      const opponentId = Object.values(currentRoom.usernames).find(
+        (obj) => obj.id !== this.id
+      ).id;
 
+      const player1 = players[this.id];
+      const player2 = currentRoom.usernames[opponentId];
+
+      io.to(gameRoomId).emit("game:over", player1, player2);
+
+      //  Reset room
+      currentRoom.turns = 0;
+      currentRoom.position = {};
+      currentRoom.clicks = [];
+
+      player1.points = 0;
+      player1.time = 0;
+
+      player2.points = 0;
+      player2.time = 0;
+    }
 
     io.to(gameRoomId).emit(
       "round:win",
@@ -141,7 +118,6 @@ const handleGame = async function (reactionTime, gameRoomId) {
 };
 
 const handlePlayerJoin = async function (username, callback) {
-  debug(`User: ${username}, Socket id: ${this.id} wants to join lobby`);
 
   username[this.id] = username;
 
@@ -186,9 +162,6 @@ const handlePlayerJoin = async function (username, callback) {
 
   // Find the gamesession and add the player to it
   const room = rooms.find((obj) => obj.id === joinGameRoom);
-
-  // console.log("Här är room", room);
-
   room.usernames = {
     ...room.usernames,
     [this.id]: { id: this.id, name: username, points: 0, time: 0 },
@@ -201,22 +174,17 @@ const handlePlayerJoin = async function (username, callback) {
     io.to(joinGameRoom).emit("players:list", room.usernames);
     lobby.splice(0, 2);
 
-
     const newPosition = generateNewPosition();
 
     room.position = newPosition;
 
     io.to(room.id).emit("virus:position", room.position);
-
   }
 
   callback(joinGameRoom);
 };
 
 const gamePlay = (currentRoom, gameRoomId) => {
-  // console.log("HÄR ÄR CURRENTROOM:", currentRoom)
-  // console.log("HÄR ÄR GAMEROOMID:", gameRoomId)
-
   let delay = Math.floor(Math.random() * 5);
   setTimeout(() => {
     const room = rooms.find((obj) => obj.id === gameRoomId);
@@ -225,7 +193,6 @@ const gamePlay = (currentRoom, gameRoomId) => {
 
     room.position = newPosition;
 
-    // console.log("HÄR ÄR ROOM:", room)
     io.to(room.id).emit("virus:position", room.position);
   }, parseInt(delay * 1000));
 };
