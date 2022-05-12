@@ -14,6 +14,21 @@ const lobby = [];
 /**
  *  Functions
  */
+const generateNewPosition = () => {
+  // Random numbers for grid
+  let randomGridNumberX = Math.floor(Math.random() * 11);
+  let randomGridNumberY = Math.floor(Math.random() * 11);
+
+  // Adding the styling in a object so the virus can move around randon
+  let randomGrid = {
+    gridColumnStart: randomGridNumberX,
+    gridColumnEnd: ++randomGridNumberX,
+    gridRowStart: randomGridNumberY,
+    gridRowEnd: ++randomGridNumberY,
+  };
+
+  return randomGrid;
+};
 
 const handleDisconnect = function () {
   // Hitta nuvarande rum
@@ -54,41 +69,15 @@ const handleGame = async function (reactionTime, gameRoomId) {
 
   this.emit("player:point", this.id, currentRoom);
 
-  // console.log("Här är currentRoom.clicks ", currentRoom.clicks);
-
   if (currentRoom.clicks.length === 2) {
-    let mappedUserId = Object.values(players).map((username) => username.id);
-
-    let opponentUserId = mappedUserId.filter(
-      (opponent) => opponent !== this.id
-    );
-
-    const yourTime = players[this.id].time;
-    const opponentTime = players[opponentUserId].time;
-
-    io.to(gameRoomId).emit("player:time", yourTime, opponentTime);
-
-    currentRoom.turns = currentRoom.turns + 1;
-
     const roundWinnerId = currentRoom.clicks[0].id;
     const opponentId = Object.values(currentRoom.usernames).find(
       (obj) => obj.id !== this.id
     ).id;
 
+    currentRoom.turns = currentRoom.turns + 1;
+
     currentRoom.usernames[roundWinnerId].points += 1;
-
-    const player1 = players[this.id];
-    const player2 = currentRoom.usernames[opponentId];
-
-    // console.log(currentRoom["turns"]);
-
-    // Avsluta spelet när tio rundor har gått
-    if (currentRoom["turns"] === 5) {
-      const player1 = players[this.id];
-      const player2 = currentRoom.usernames[opponentId];
-      io.to(gameRoomId).emit("game:over", player1, player2);
-      turns = 0;
-    }
 
     io.to(gameRoomId).emit(
       "round:win",
@@ -99,6 +88,26 @@ const handleGame = async function (reactionTime, gameRoomId) {
     );
 
     currentRoom.clicks = [];
+
+    // Avsluta spelet när tio rundor har gått
+    if (currentRoom["turns"] === 5) {
+      const opponentId = Object.values(currentRoom.usernames).find(
+        (obj) => obj.id !== this.id
+      ).id;
+
+      const player1 = players[this.id];
+      const player2 = currentRoom.usernames[opponentId];
+      io.to(gameRoomId).emit("game:over", player1, player2);
+      currentRoom.turns = 0;
+      currentRoom.position = {};
+      currentRoom.clicks = [];
+      player1.points = 0;
+      player2.time = 0;
+      player1.points = 0;
+      player2.time = 0;
+    }
+
+    gamePlay(currentRoom, gameRoomId);
   }
 };
 
@@ -162,38 +171,18 @@ const handlePlayerJoin = async function (username, callback) {
   if (lobby.length >= 2) {
     io.to(joinGameRoom).emit("players:list", room.usernames);
     lobby.splice(0, 2);
+
     const newPosition = generateNewPosition();
 
     room.position = newPosition;
 
-    io.to(room.id).emit("virus:position", rooms.position);
+    io.to(room.id).emit("virus:position", room.position);
   }
 
   callback(joinGameRoom);
 };
 
-const generateNewPosition = () => {
-  // Random numbers for grid
-  let randomGridNumberX = Math.floor(Math.random() * 11);
-  let randomGridNumberY = Math.floor(Math.random() * 11);
-
-  // Adding the styling in a object so the virus can move around randon
-  let randomGrid = {
-    gridColumnStart: randomGridNumberX,
-    gridColumnEnd: ++randomGridNumberX,
-    gridRowStart: randomGridNumberY,
-    gridRowEnd: ++randomGridNumberY,
-  };
-
-  // rooms.position = randomGrid;
-
-  // io.emit("virus:position", randomGrid, rooms.position);
-
-  return randomGrid;
-};
-
 const gamePlay = (currentRoom, gameRoomId) => {
-  // console.log("HÄR ÄR CURRENTROOM:", currentRoom)
   console.log("HÄR ÄR GAMEROOMID:", gameRoomId);
 
   let delay = Math.floor(Math.random() * 5);
